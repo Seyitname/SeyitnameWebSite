@@ -1,0 +1,136 @@
+<!-- AI tarafından yapıldı - Admin Üye Listesi -->
+@model List<SeyitnameWebSite.Data.User>
+@{
+    ViewData["Title"] = "Üye Yönetimi - Admin Paneli";
+}
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="text-center mb-5 portfolio-item">
+                <h1 class="hero-title mb-2">⚙️ Admin Paneli</h1>
+                <p class="hero-subtitle">Kayıtlı Üyeleri Yönet</p>
+            </div>
+
+            @if (Model == null || Model.Count == 0)
+            {
+                <div class="alert alert-info" role="alert">
+                    ℹ️ Henüz kayıtlı üye yok.
+                </div>
+                <a href="/" class="btn btn-outline-primary">← Anasayfaya Dön</a>
+            }
+            else
+            {
+                <div class="card-custom portfolio-item">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-dark mb-0">
+                            <thead class="table-header-custom">
+                                <tr>
+                                    <th class="gradient-text">👤 Kullanıcı Adı</th>
+                                    <th class="gradient-text">👨‍💼 Ad-Soyad</th>
+                                    <th class="gradient-text">📧 E-posta</th>
+                                    <th class="gradient-text">📅 Üye Olma Tarihi</th>
+                                    <th class="gradient-text">⚙️ İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var user in Model)
+                                {
+                                    <tr class="border-bottom border-secondary align-middle">
+                                        <td>
+                                            <strong>@user.UserName</strong>
+                                        </td>
+                                        <td>@user.FullName</td>
+                                        <td>@user.Email</td>
+                                        <td>@user.CreatedDate.ToString("dd.MM.yyyy HH:mm")</td>
+                                        <td>
+                                            <a href="/Admin/UserDetails/@user.Id" class="btn btn-sm btn-info me-2" title="Detayları Gör">
+                                                👁️ Görüntüle
+                                            </a>
+                                            <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" onclick="setDeleteUserId('@user.Id', '@user.UserName')" title="Sil">
+                                                🗑️ Sil
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="mt-4">
+                        <p class="text-muted">
+                            📊 Toplam @Model.Count Kayıtlı Üye
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <a href="/" class="btn btn-outline-primary">← Anasayfaya Dön</a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="background-color: rgba(15, 12, 41, 0.95); border: 1px solid rgba(102, 126, 234, 0.3);">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title gradient-text" id="deleteModalLabel">⚠️ Kullanıcı Sil</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-light">
+                <p>Kullanıcı <strong id="deleteUserName"></strong> kalıcı olarak silinecek!</p>
+                <p class="text-warning">⚠️ <strong>Bu işlem geri alınamaz!</strong></p>
+            </div>
+            <div class="modal-footer border-secondary">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Evet, Sil</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.table-header-custom {
+    background-color: rgba(102, 126, 234, 0.1);
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(102, 126, 234, 0.08) !important;
+}
+</style>
+
+<script>
+let deleteUserId = null;
+
+function setDeleteUserId(userId, userName) {
+    deleteUserId = userId;
+    document.getElementById('deleteUserName').textContent = userName;
+}
+
+document.getElementById('confirmDeleteBtn').addEventListener('click', async function() {
+    if (!deleteUserId) return;
+
+    try {
+        const response = await fetch(`/Admin/DeleteUser`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ id: deleteUserId })
+        });
+
+        if (response.ok) {
+            alert('✅ Kullanıcı başarıyla silindi!');
+            location.reload();
+        } else {
+            alert('❌ Silme işlemi başarısız!');
+        }
+    } catch (error) {
+        console.error('Hata:', error);
+        alert('❌ Bir hata oluştu!');
+    }
+});
+</script>

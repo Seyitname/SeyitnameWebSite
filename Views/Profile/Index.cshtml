@@ -1,0 +1,135 @@
+<!-- AI tarafından yapıldı - User Profile Page -->
+@model SeyitnameWebSite.Data.User
+@{
+    ViewData["Title"] = "Profilim - Seyitname";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="text-center mb-5 portfolio-item">
+                <h1 class="hero-title mb-3">👤 Profilim</h1>
+                <p class="hero-subtitle">Kişisel Bilgilerim</p>
+            </div>
+
+            <div class="card-custom portfolio-item">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h5 class="text-muted">👨‍💼 Kullanıcı Adı</h5>
+                        <p class="gradient-text h5">@Model?.UserName</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h5 class="text-muted">✉️ E-posta</h5>
+                        <p class="gradient-text h5">@Model?.Email</p>
+                    </div>
+                </div>
+
+                <hr class="border-secondary" />
+
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h5 class="text-muted">👤 Ad-Soyad</h5>
+                        <p class="text-light">@Model?.FullName</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h5 class="text-muted">📅 Üye Olduğu Tarih</h5>
+                        <p class="text-light">@Model?.CreatedDate.ToString("dd.MM.yyyy")</p>
+                    </div>
+                </div>
+
+                <hr class="border-secondary" />
+
+                @if (!string.IsNullOrEmpty(Model?.Bio))
+                {
+                    <div class="mb-4">
+                        <h5 class="text-muted">📝 Biyografi</h5>
+                        <p class="text-light">@Model.Bio</p>
+                    </div>
+
+                    <hr class="border-secondary" />
+                }
+
+                <div class="d-flex gap-2 flex-wrap">
+                    <a href="/Profile/Edit" class="btn btn-custom text-white flex-grow-1">
+                        ✏️ Profili Düzenle
+                    </a>
+                    <form asp-controller="Account" asp-action="Logout" method="post" class="flex-grow-1">
+                        <button type="submit" class="btn btn-outline-secondary w-100">
+                            🚪 Çıkış Yap
+                        </button>
+                    </form>
+                    <a type="button" class="btn btn-outline-danger flex-grow-1" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+                        🗑️ Hesabı Sil
+                    </a>
+                </div>
+            </div>
+
+            <div class="text-center mt-5">
+                <a href="/" class="btn btn-outline-primary">← Anasayfaya Dön</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Account Modal -->
+<div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="background-color: rgba(15, 12, 41, 0.95); border: 1px solid rgba(102, 126, 234, 0.3);">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title gradient-text" id="deleteAccountModalLabel">⚠️ Hesabı Kalıcı Olarak Sil</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-light">
+                <p>Hesabın <strong>kalıcı olarak silinecek!</strong></p>
+                <p class="text-warning">⚠️ <strong>Bu işlem geri alınamaz!</strong></p>
+                <p>Tüm verileriniz silinecek:</p>
+                <ul class="text-warning small">
+                    <li>Profil bilgileri</li>
+                    <li>Şifre ve kullanıcı adı</li>
+                    <li>Biyografi ve diğer veriler</li>
+                </ul>
+                <p class="mt-3 text-muted small">
+                    Onaylamak için şifrenizi girin:
+                </p>
+                <input type="password" id="deletePassword" class="form-control form-control-custom" placeholder="Şifreniz" />
+            </div>
+            <div class="modal-footer border-secondary">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal Et</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteAccountBtn">Evet, Hesabı Sil</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('confirmDeleteAccountBtn').addEventListener('click', async function() {
+    const password = document.getElementById('deletePassword').value;
+    
+    if (!password) {
+        alert('❌ Lütfen şifrenizi girin!');
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/Profile/DeleteAccount`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ password: password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            alert('✅ Hesabınız silindi! Anasayfaya yönlendiriliyorsunuz...');
+            window.location.href = '/';
+        } else {
+            alert('❌ ' + (data.message || 'Silme işlemi başarısız!'));
+        }
+    } catch (error) {
+        console.error('Hata:', error);
+        alert('❌ Bir hata oluştu!');
+    }
+});
+</script>

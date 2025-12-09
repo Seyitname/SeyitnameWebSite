@@ -1,0 +1,63 @@
+<!-- AI tarafından yapıldı - Modern iletişim formu -->
+@model IletisimBilgileri
+
+@{
+    ViewData["Title"] = "İletişim - Seyitname";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="text-center mb-5 portfolio-item">
+                <h1 class="hero-title mb-3">💬 İletişim Formu</h1>
+                <p class="hero-subtitle">Görüşleriniz Çok Önemli!</p>
+            </div>
+
+            <div class="card-custom portfolio-item">
+                <form asp-controller="CallUs" asp-action="Index" method="post" class="needs-validation">
+                    <div class="form-group mb-4">
+                        <label asp-for="Puan" class="form-label gradient-text mb-2">⭐ Değerlendirme (0-10) *</label>
+                        <input asp-for="Puan" type="number" min="0" max="10" class="form-control-custom form-control" placeholder="Örn: 8" required>
+                        <span asp-validation-for="Puan" class="text-danger small d-block mt-1"></span>
+                        <small class="text-muted">0 (Kötü) ile 10 (Mükemmel) arasında bir değer girin</small>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label asp-for="Ad" class="form-label gradient-text mb-2">👤 İsim *</label>
+                        <input asp-for="Ad" class="form-control-custom form-control" placeholder="Adınız ve Soyadınız" required>
+                        <span asp-validation-for="Ad" class="text-danger small d-block mt-1"></span>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label asp-for="Email" class="form-label gradient-text mb-2">📧 E-Posta *</label>
+                        <input asp-for="Email" type="email" class="form-control-custom form-control" placeholder="E-posta Adresi (geri dönüş için)" required>
+                        <span asp-validation-for="Email" class="text-danger small d-block mt-1"></span>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label asp-for="Mesaj" class="form-label gradient-text mb-2">💭 Mesajınız *</label>
+                        <textarea asp-for="Mesaj" class="form-control-custom form-control" rows="5" placeholder="Düşüncelerinizi, önerilerinizi veya eleştirilerinizi yazın..." required style="resize: none;"></textarea>
+                        <span asp-validation-for="Mesaj" class="text-danger small d-block mt-1"></span>
+                    </div>
+
+                    @if (!ViewData.ModelState.IsValid && ViewData.ModelState.Values.Any(x => x.Errors.Any()))
+                    {
+                        <div class="alert alert-custom alert-danger mb-4">
+                            <h5>⚠️ Lütfen aşağıdaki hataları düzeltin:</h5>
+                            @Html.ValidationSummary(false)
+                        </div>
+                    }
+
+                    <div class="d-flex gap-3">
+                        <button type="submit" class="btn btn-custom btn-lg text-white flex-grow-1">
+                            ✉️ Gönder
+                        </button>
+                        <a href="/" class="btn btn-outline-primary btn-lg flex-grow-1">
+                            ← Geri Dön
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
