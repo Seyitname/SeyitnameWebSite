@@ -99,6 +99,42 @@ public class ProfileController : Controller
 
         return Json(new { success = false, message = "Silme işlemi başarısız!" });
     }
+
+    [HttpGet]
+    public IActionResult ConfirmDeleteAccount()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteAccountConfirm(string password)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+        {
+            TempData["ErrorMessage"] = "Kullanıcı bulunamadı!";
+            return RedirectToAction(nameof(Index));
+        }
+
+        var result = await _userManager.CheckPasswordAsync(user, password);
+        if (!result)
+        {
+            ModelState.AddModelError(string.Empty, "❌ Şifre yanlış!");
+            return View("ConfirmDeleteAccount");
+        }
+
+        var deleteResult = await _userManager.DeleteAsync(user);
+        if (deleteResult.Succeeded)
+        {
+            await _signInManager.SignOutAsync();
+            TempData["SuccessMessage"] = "Hesabınız silindi!";
+            return RedirectToAction("Index", "Home");
+        }
+
+        ModelState.AddModelError(string.Empty, "Silme işlemi başarısız!");
+        return View("ConfirmDeleteAccount");
+    }
 }
 
 // AI tarafından yapıldı - Edit Profile Model

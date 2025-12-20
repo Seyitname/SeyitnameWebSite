@@ -58,9 +58,7 @@
                             🚪 Çıkış Yap
                         </button>
                     </form>
-                    <button type="button" class="btn btn-outline-danger flex-grow-1" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
-                        🗑️ Hesabı Sil
-                    </button>
+                    <a href="/Profile/ConfirmDeleteAccount" class="btn btn-outline-danger flex-grow-1">🗑️ Hesabı Sil</a>
                 </div>
             </div>
 
@@ -71,35 +69,12 @@
     </div>
 </div>
 
-<!-- Delete Account Modal -->
-<div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content" style="background-color: rgba(15, 12, 41, 0.95); border: 1px solid rgba(102, 126, 234, 0.3);">
-            <div class="modal-header border-secondary">
-                <h5 class="modal-title gradient-text" id="deleteAccountModalLabel">⚠️ Hesabı Kalıcı Olarak Sil</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body text-light">
-                <p>Hesabın <strong>kalıcı olarak silinecek!</strong></p>
-                <p class="text-warning">⚠️ <strong>Bu işlem geri alınamaz!</strong></p>
-                <p>Tüm verileriniz silinecek:</p>
-                <ul class="text-warning small">
-                    <li>Profil bilgileri</li>
-                    <li>Şifre ve kullanıcı adı</li>
-                    <li>Biyografi ve diğer veriler</li>
-                </ul>
-                <p class="mt-3 text-muted small">
-                    Onaylamak için şifrenizi girin:
-                </p>
-                <input type="password" id="deletePassword" class="form-control form-control-custom" placeholder="Şifreniz" />
-            </div>
-            <div class="modal-footer border-secondary">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal Et</button>
-                <button type="button" class="btn btn-danger" id="confirmDeleteAccountBtn">Evet, Hesabı Sil</button>
-            </div>
-        </div>
-    </div>
-</div>
+@if (TempData["SuccessMessage"] != null) {
+    <div class="alert alert-success mt-3">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null) {
+    <div class="alert alert-danger mt-3">@TempData["ErrorMessage"]</div>
+}
 
 <script>
 document.getElementById('confirmDeleteAccountBtn').addEventListener('click', async function() {

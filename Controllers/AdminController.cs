@@ -96,6 +96,55 @@ namespace SeyitnameWebSite.Controllers
 
             return View(user);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> ConfirmDeleteUser(string id)
+        {
+            if (!await IsAdminAsync())
+            {
+                return Unauthorized(new { message = "Bu sayfaya erişim yetkiniz yok!" });
+            }
+
+            if (string.IsNullOrEmpty(id)) return BadRequest();
+
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null) return NotFound();
+
+            return View(user);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteUserConfirm(string id)
+        {
+            if (!await IsAdminAsync())
+            {
+                return Unauthorized(new { message = "Bu işlemi yapamazsınız!" });
+            }
+
+            if (string.IsNullOrEmpty(id))
+            {
+                TempData["ErrorMessage"] = "Geçersiz kullanıcı id!";
+                return RedirectToAction(nameof(Users));
+            }
+
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                TempData["ErrorMessage"] = "Kullanıcı bulunamadı!";
+                return RedirectToAction(nameof(Users));
+            }
+
+            var result = await _userManager.DeleteAsync(user);
+            if (result.Succeeded)
+            {
+                TempData["SuccessMessage"] = "Kullanıcı silindi!";
+                return RedirectToAction(nameof(Users));
+            }
+
+            TempData["ErrorMessage"] = "Silme işlemi başarısız!";
+            return RedirectToAction(nameof(Users));
+        }
     }
 
     // Model for DeleteUser JSON body

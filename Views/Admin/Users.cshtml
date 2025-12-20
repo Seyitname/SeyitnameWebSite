@@ -47,9 +47,7 @@
                                             <button type="button" class="btn btn-sm btn-info me-2" title="Detayları Gör" onclick="location.href='/Admin/UserDetails/@user.Id'">
                                                 👁️ Görüntüle
                                             </button>
-                                            <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-username="@user.UserName" onclick="setDeleteUserId('@user.Id', this)" title="Sil">
-                                                🗑️ Sil
-                                            </button>
+                                            <a href="/Admin/ConfirmDeleteUser?id=@user.Id" class="btn btn-sm btn-danger" title="Sil">🗑️ Sil</a>
                                         </td>
                                     </tr>
                                 }
@@ -72,25 +70,12 @@
     </div>
 </div>
 
-<!-- Delete Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content" style="background-color: rgba(15, 12, 41, 0.95); border: 1px solid rgba(102, 126, 234, 0.3);">
-            <div class="modal-header border-secondary">
-                <h5 class="modal-title gradient-text" id="deleteModalLabel">⚠️ Kullanıcı Sil</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body text-light">
-                <p>Kullanıcı <strong id="deleteUserName"></strong> kalıcı olarak silinecek!</p>
-                <p class="text-warning">⚠️ <strong>Bu işlem geri alınamaz!</strong></p>
-            </div>
-            <div class="modal-footer border-secondary">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
-                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Evet, Sil</button>
-            </div>
-        </div>
-    </div>
-</div>
+@if (TempData["SuccessMessage"] != null) {
+    <div class="alert alert-success mt-3">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null) {
+    <div class="alert alert-danger mt-3">@TempData["ErrorMessage"]</div>
+}
 
 <style>
 .table-header-custom {
@@ -101,45 +86,3 @@
     background-color: rgba(102, 126, 234, 0.08) !important;
 }
 </style>
-
-<script>
-let deleteUserId = null;
-
-function setDeleteUserId(userId, btnElem) {
-    deleteUserId = userId;
-    const username = btnElem ? btnElem.getAttribute('data-username') : '';
-    document.getElementById('deleteUserName').textContent = username;
-}
-
-document.getElementById('confirmDeleteBtn').addEventListener('click', async function() {
-    if (!deleteUserId) return;
-
-    try {
-        const response = await fetch(`/Admin/DeleteUser`, {
-            method: 'POST',
-            credentials: 'same-origin',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ id: deleteUserId })
-        });
-
-        if (response.status === 401) {
-            alert('❌ Yetkiniz yok. Lütfen yönetici olarak giriş yapın.');
-            return;
-        }
-
-        const data = await response.json().catch(() => null);
-
-        if (response.ok && data && data.success) {
-            alert('✅ Kullanıcı başarıyla silindi!');
-            location.reload();
-        } else {
-            alert('❌ ' + (data?.message || 'Silme işlemi başarısız!'));
-        }
-    } catch (error) {
-        console.error('Hata:', error);
-        alert('❌ Bir hata oluştu!');
-    }
-});
-</script>

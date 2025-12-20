@@ -1,0 +1,31 @@
+@model SeyitnameWebSite.Data.User
+@{
+    ViewData["Title"] = "Kullanıcıyı Sil - Admin";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card-custom p-4">
+                <h3 class="mb-3">⚠️ Kullanıcıyı Sil</h3>
+
+                <p>Bu kullanıcı <strong>@Model?.UserName</strong> kalıcı olarak silinecek.</p>
+
+                <form asp-action="DeleteUserConfirm" method="post">
+                    <input type="hidden" name="id" value="@Model?.Id" />
+                    @Html.AntiForgeryToken()
+
+                    <div class="mt-3 d-flex gap-2">
+                        <a href="@Url.Action("Users", "Admin")" class="btn btn-secondary">İptal</a>
+                        <button type="submit" class="btn btn-danger">Evet, Sil</button>
+                    </div>
+                </form>
+
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="alert alert-danger mt-3">@TempData["ErrorMessage"]</div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
