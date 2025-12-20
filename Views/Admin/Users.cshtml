@@ -47,7 +47,7 @@
                                             <a href="/Admin/UserDetails/@user.Id" class="btn btn-sm btn-info me-2" title="Detayları Gör">
                                                 👁️ Görüntüle
                                             </a>
-                                            <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" onclick="setDeleteUserId('@user.Id', '@user.UserName')" title="Sil">
+                                            <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-username="@user.UserName" onclick="setDeleteUserId('@user.Id', this)" title="Sil">
                                                 🗑️ Sil
                                             </button>
                                         </td>
@@ -105,9 +105,10 @@
 <script>
 let deleteUserId = null;
 
-function setDeleteUserId(userId, userName) {
+function setDeleteUserId(userId, btnElem) {
     deleteUserId = userId;
-    document.getElementById('deleteUserName').textContent = userName;
+    const username = btnElem ? btnElem.getAttribute('data-username') : '';
+    document.getElementById('deleteUserName').textContent = username;
 }
 
 document.getElementById('confirmDeleteBtn').addEventListener('click', async function() {

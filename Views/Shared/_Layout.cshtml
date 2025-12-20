@@ -5,8 +5,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - SeyitnameWebSite</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="/Identity/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/Identity/css/site.css" />
     <link rel="stylesheet" href="~/css/portfolio.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/SeyitnameWebSite.styles.css" asp-append-version="true" />
     <link rel="shortcut icon" href="~/img/Orjinal.jpg" type="image/x-icon">
@@ -85,9 +85,9 @@
                 <div class="col-md-3">
                     <h5 class="text-light mb-3">Linkler</h5>
                     <ul class="list-unstyled">
-                        <li><a href="#" class="text-muted text-decoration-none hover-link">Portföy</a></li>
-                        <li><a href="#" class="text-muted text-decoration-none hover-link">İletişim</a></li>
-                        <li><a href="#" class="text-muted text-decoration-none hover-link">Hakkımda</a></li>
+                        <li><a asp-controller="Baglanti" asp-action="Index" class="text-muted text-decoration-none hover-link">Portföy</a></li>
+                        <li><a asp-controller="CallUs" asp-action="Index" class="text-muted text-decoration-none hover-link">İletişim</a></li>
+                        <li><a asp-controller="Informations" asp-action="Anlami" class="text-muted text-decoration-none hover-link">Hakkımda</a></li>
                     </ul>
                 </div>
                 <div class="col-md-3">
@@ -106,8 +106,8 @@
     </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="/Identity/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/Identity/js/site.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

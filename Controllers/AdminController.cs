@@ -28,9 +28,8 @@ namespace SeyitnameWebSite.Controllers
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null) return false;
 
-            var allUsers = _userManager.Users.ToList();
-            // İlk kullanıcı = admin
-            return allUsers.FirstOrDefault()?.Id == currentUser.Id;
+            // Check role membership instead of relying on user order
+            return await _userManager.IsInRoleAsync(currentUser, "Admin");
         }
 
         [HttpGet]
@@ -50,12 +49,19 @@ namespace SeyitnameWebSite.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteUser(string id)
+        public async Task<IActionResult> DeleteUser([FromBody] DeleteUserModel model)
         {
+            var id = model?.Id;
+
             // Admin kontrol
             if (!await IsAdminAsync())
             {
                 return Unauthorized(new { message = "Bu işlemi yapamazsınız!" });
+            }
+
+            if (string.IsNullOrEmpty(id))
+            {
+                return BadRequest(new { success = false, message = "Geçersiz kullanıcı id!" });
             }
 
             var user = await _userManager.FindByIdAsync(id);
@@ -91,4 +97,11 @@ namespace SeyitnameWebSite.Controllers
             return View(user);
         }
     }
+
+    // Model for DeleteUser JSON body
+    public class DeleteUserModel
+    {
+        public string? Id { get; set; }
+    }
 }
+

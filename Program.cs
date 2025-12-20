@@ -42,6 +42,37 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<DataContext>();
     db.Database.Migrate();
+
+    // Ensure roles exist and seed Admin role if missing
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+
+    try
+    {
+        var adminRoleExists = roleManager.RoleExistsAsync("Admin").GetAwaiter().GetResult();
+        if (!adminRoleExists)
+        {
+            logger.LogInformation("Creating 'Admin' role in database.");
+            roleManager.CreateAsync(new IdentityRole("Admin")).GetAwaiter().GetResult();
+
+            // If there is exactly one user, make them Admin for initial setup
+            var users = db.Users.ToList();
+            if (users.Count == 1)
+            {
+                var firstUser = users[0];
+                if (!userManager.IsInRoleAsync(firstUser, "Admin").GetAwaiter().GetResult())
+                {
+                    logger.LogInformation("Assigning 'Admin' role to first user: {UserId}", firstUser.Id);
+                    userManager.AddToRoleAsync(firstUser, "Admin").GetAwaiter().GetResult();
+                }
+            }
+        }
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "Error while ensuring roles are created");
+    }
 }
 
 // Configure the HTTP request pipeline.

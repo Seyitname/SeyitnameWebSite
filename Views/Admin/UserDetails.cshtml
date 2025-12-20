@@ -115,7 +115,7 @@
 
 <script>
 document.getElementById('confirmDeleteBtn').addEventListener('click', async function() {
-    const userId = '@Model?.Id';
+    const userId = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model?.Id));
     
     try {
         const response = await fetch(`/Admin/DeleteUser`, {

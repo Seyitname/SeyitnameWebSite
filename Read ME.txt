@@ -209,3 +209,4 @@ public class LoginModel
 ---
 
 **İmza:** GitHub Copilot (Raptor mini (Preview)) — 20 Aralık 2025
+**İmza:** Seyitname — 14 Eylül 2025

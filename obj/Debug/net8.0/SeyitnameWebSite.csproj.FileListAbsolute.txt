@@ -23,15 +23,10 @@ C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Debug\net8.0\Microsoft.EntityFramewo
 C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Design.dll
 C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
 C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Sqlite.dll
-C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Debug\net8.0\Microsoft.Extensions.Caching.Memory.dll
-C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.dll
-C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
 C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Debug\net8.0\Microsoft.Extensions.DependencyModel.dll
 C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Debug\net8.0\Microsoft.Extensions.FileProviders.Embedded.dll
 C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Debug\net8.0\Microsoft.Extensions.Identity.Core.dll
 C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Debug\net8.0\Microsoft.Extensions.Identity.Stores.dll
-C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Debug\net8.0\Microsoft.Extensions.Logging.dll
-C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
 C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
 C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Debug\net8.0\Mono.TextTemplating.dll
 C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Debug\net8.0\SQLitePCLRaw.batteries_v2.dll
@@ -125,6 +120,7 @@ C:\Users\seyit\Desktop\SeyitnameWebSite\obj\Debug\net8.0\SeyitnameWebSite.MvcApp
 C:\Users\seyit\Desktop\SeyitnameWebSite\obj\Debug\net8.0\SeyitnameWebSite.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\seyit\Desktop\SeyitnameWebSite\obj\Debug\net8.0\SeyitnameWebSite.RazorAssemblyInfo.cache
 C:\Users\seyit\Desktop\SeyitnameWebSite\obj\Debug\net8.0\SeyitnameWebSite.RazorAssemblyInfo.cs
+C:\Users\seyit\Desktop\SeyitnameWebSite\obj\Debug\net8.0\SeyitnameWebSite.sourcelink.json
 C:\Users\seyit\Desktop\SeyitnameWebSite\obj\Debug\net8.0\rjimswa.dswa.cache.json
 C:\Users\seyit\Desktop\SeyitnameWebSite\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
 C:\Users\seyit\Desktop\SeyitnameWebSite\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
@@ -135,10 +131,10 @@ C:\Users\seyit\Desktop\SeyitnameWebSite\obj\Debug\net8.0\staticwebassets.build.j
 C:\Users\seyit\Desktop\SeyitnameWebSite\obj\Debug\net8.0\staticwebassets.build.json.cache
 C:\Users\seyit\Desktop\SeyitnameWebSite\obj\Debug\net8.0\staticwebassets.development.json
 C:\Users\seyit\Desktop\SeyitnameWebSite\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+C:\Users\seyit\Desktop\SeyitnameWebSite\obj\Debug\net8.0\swae.build.ex.cache
 C:\Users\seyit\Desktop\SeyitnameWebSite\obj\Debug\net8.0\Seyitnam.22024774.Up2Date
 C:\Users\seyit\Desktop\SeyitnameWebSite\obj\Debug\net8.0\SeyitnameWebSite.dll
 C:\Users\seyit\Desktop\SeyitnameWebSite\obj\Debug\net8.0\refint\SeyitnameWebSite.dll
 C:\Users\seyit\Desktop\SeyitnameWebSite\obj\Debug\net8.0\SeyitnameWebSite.pdb
 C:\Users\seyit\Desktop\SeyitnameWebSite\obj\Debug\net8.0\SeyitnameWebSite.genruntimeconfig.cache
 C:\Users\seyit\Desktop\SeyitnameWebSite\obj\Debug\net8.0\ref\SeyitnameWebSite.dll
-C:\Users\seyit\Desktop\SeyitnameWebSite\obj\Debug\net8.0\swae.build.ex.cache

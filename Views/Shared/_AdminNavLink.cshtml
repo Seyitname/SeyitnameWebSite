@@ -3,12 +3,10 @@
 
 @{
     var currentUser = await UserManager.GetUserAsync(User);
-    var allUsers = UserManager.Users.ToList();
-    var isAdmin = allUsers.FirstOrDefault()?.Id == currentUser?.Id;
+    var isAdmin = currentUser != null && await UserManager.IsInRoleAsync(currentUser, "Admin");
 }
 
-@if (isAdmin)
-@if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+@if (User?.Identity?.IsAuthenticated == true && isAdmin)
 {
     <li class="nav-item">
         <a class="nav-link nav-link-custom" asp-controller="Admin" asp-action="Users" style="color: #f093fb;">⚙️ Admin</a>
