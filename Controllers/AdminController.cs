@@ -142,21 +142,21 @@ namespace SeyitnameWebSite.Controllers
                 return View();
             }
 
-n            var exists = await _roleManager.RoleExistsAsync(roleName);
+            var exists = await _roleManager.RoleExistsAsync(roleName);
             if (exists)
             {
                 ModelState.AddModelError(string.Empty, "Bu rol zaten var.");
                 return View();
             }
 
-n            var result = await _roleManager.CreateAsync(new IdentityRole(roleName));
+            var result = await _roleManager.CreateAsync(new IdentityRole(roleName));
             if (result.Succeeded)
             {
                 TempData["SuccessMessage"] = "Rol oluşturuldu.";
                 return RedirectToAction(nameof(Roles));
             }
 
-n            foreach (var err in result.Errors) ModelState.AddModelError(string.Empty, err.Description);
+            foreach (var err in result.Errors) ModelState.AddModelError(string.Empty, err.Description);
             return View();
         }
 
@@ -166,40 +166,39 @@ n            foreach (var err in result.Errors) ModelState.AddModelError(string.
             if (!await IsAdminAsync()) return Unauthorized();
             if (string.IsNullOrEmpty(id)) return BadRequest();
 
-n            var user = await _userManager.FindByIdAsync(id);
+            var user = await _userManager.FindByIdAsync(id);
             if (user == null) return NotFound();
 
             var allRoles = _roleManager.Roles.Select(r => r.Name).ToList();
             var userRoles = await _userManager.GetRolesAsync(user);
 
-n            var model = new ManageUserRolesViewModel
+            var model = new ManageUserRolesViewModel
             {
                 UserId = user.Id,
                 UserName = user.UserName,
                 Roles = allRoles.Select(r => new RoleSelection { RoleName = r, Selected = userRoles.Contains(r) }).ToList()
             };
 
-n            return View(model);
+            return View(model);
         }
 
-n        [HttpPost]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateUserRoles(ManageUserRolesViewModel model)
+        public async Task<IActionResult> UpdateUserRoles(ManageUserRolesViewModel model) 
         {
             if (!await IsAdminAsync()) return Unauthorized();
             var user = await _userManager.FindByIdAsync(model.UserId);
             if (user == null) return NotFound();
-
-n            var currentRoles = await _userManager.GetRolesAsync(user);
+            var currentRoles = await _userManager.GetRolesAsync(user);
             var selectedRoles = model.Roles.Where(r => r.Selected).Select(r => r.RoleName).ToList();
 
-n            var rolesToAdd = selectedRoles.Except(currentRoles).ToList();
+            var rolesToAdd = selectedRoles.Except(currentRoles).ToList();
             var rolesToRemove = currentRoles.Except(selectedRoles).ToList();
 
-n            if (rolesToAdd.Any()) await _userManager.AddToRolesAsync(user, rolesToAdd);
+            if (rolesToAdd.Any()) await _userManager.AddToRolesAsync(user, rolesToAdd);
             if (rolesToRemove.Any()) await _userManager.RemoveFromRolesAsync(user, rolesToRemove);
 
-n            TempData["SuccessMessage"] = "Kullanıcı rolleri güncellendi.";
+            TempData["SuccessMessage"] = "Kullanıcı rolleri güncellendi";
             return RedirectToAction(nameof(Users));
         }
 
@@ -251,7 +250,7 @@ n            TempData["SuccessMessage"] = "Kullanıcı rolleri güncellendi.";
         public List<RoleSelection> Roles { get; set; } = new();
     }
 
-n    public class RoleSelection
+    public class RoleSelection
     {
         public string RoleName { get; set; } = string.Empty;
         public bool Selected { get; set; }
