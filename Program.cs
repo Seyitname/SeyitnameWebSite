@@ -50,22 +50,27 @@ using (var scope = app.Services.CreateScope())
 
     try
     {
-        var adminRoleExists = roleManager.RoleExistsAsync("Admin").GetAwaiter().GetResult();
-        if (!adminRoleExists)
+        // Seed default roles
+        var defaultRoles = new[] { "Admin", "Member" };
+        foreach (var roleName in defaultRoles)
         {
-            logger.LogInformation("Creating 'Admin' role in database.");
-            roleManager.CreateAsync(new IdentityRole("Admin")).GetAwaiter().GetResult();
-
-            // If there is exactly one user, make them Admin for initial setup
-            var users = db.Users.ToList();
-            if (users.Count == 1)
+            var exists = roleManager.RoleExistsAsync(roleName).GetAwaiter().GetResult();
+            if (!exists)
             {
-                var firstUser = users[0];
-                if (!userManager.IsInRoleAsync(firstUser, "Admin").GetAwaiter().GetResult())
-                {
-                    logger.LogInformation("Assigning 'Admin' role to first user: {UserId}", firstUser.Id);
-                    userManager.AddToRoleAsync(firstUser, "Admin").GetAwaiter().GetResult();
-                }
+                logger.LogInformation("Creating '{role}' role in database.", roleName);
+                roleManager.CreateAsync(new IdentityRole(roleName)).GetAwaiter().GetResult();
+            }
+        }
+
+        // If there is exactly one user, make them Admin for initial setup
+        var users = db.Users.ToList();
+        if (users.Count == 1)
+        {
+            var firstUser = users[0];
+            if (!userManager.IsInRoleAsync(firstUser, "Admin").GetAwaiter().GetResult())
+            {
+                logger.LogInformation("Assigning 'Admin' role to first user: {UserId}", firstUser.Id);
+                userManager.AddToRoleAsync(firstUser, "Admin").GetAwaiter().GetResult();
             }
         }
     }
