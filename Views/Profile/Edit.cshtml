@@ -15,6 +15,7 @@
 
                 <div class="card-custom" style="background-color: rgba(255, 255, 255, 0.08); border: 1px solid rgba(102, 126, 234, 0.2);">
                     <form method="post" action="/Profile/Edit">
+                        @Html.AntiForgeryToken()
                         <div class="mb-3">
                             <label asp-for="FullName" class="form-label text-light">👤 Ad-Soyad</label>
                             <input asp-for="FullName" type="text" class="form-control-custom" placeholder="Adınız ve Soyadınız" />
