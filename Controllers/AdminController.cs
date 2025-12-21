@@ -15,11 +15,13 @@ namespace SeyitnameWebSite.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly DataContext _context;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public AdminController(UserManager<User> userManager, DataContext context)
+        public AdminController(UserManager<User> userManager, DataContext context, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _context = context;
+            _roleManager = roleManager;
         }
 
         // Admin kontrol - sadece ilk kullanıcı (admin) erişebilir
@@ -113,6 +115,94 @@ namespace SeyitnameWebSite.Controllers
             return View(user);
         }
 
+        // ----------------- Role Management -----------------
+        [HttpGet]
+        public async Task<IActionResult> Roles()
+        {
+            if (!await IsAdminAsync()) return Unauthorized();
+            var roles = _roleManager.Roles.ToList();
+            return View(roles);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CreateRole()
+        {
+            if (!await IsAdminAsync()) return Unauthorized();
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateRole(string roleName)
+        {
+            if (!await IsAdminAsync()) return Unauthorized();
+            if (string.IsNullOrWhiteSpace(roleName))
+            {
+                ModelState.AddModelError(string.Empty, "Rol adı boş olamaz.");
+                return View();
+            }
+
+n            var exists = await _roleManager.RoleExistsAsync(roleName);
+            if (exists)
+            {
+                ModelState.AddModelError(string.Empty, "Bu rol zaten var.");
+                return View();
+            }
+
+n            var result = await _roleManager.CreateAsync(new IdentityRole(roleName));
+            if (result.Succeeded)
+            {
+                TempData["SuccessMessage"] = "Rol oluşturuldu.";
+                return RedirectToAction(nameof(Roles));
+            }
+
+n            foreach (var err in result.Errors) ModelState.AddModelError(string.Empty, err.Description);
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ManageUserRoles(string id)
+        {
+            if (!await IsAdminAsync()) return Unauthorized();
+            if (string.IsNullOrEmpty(id)) return BadRequest();
+
+n            var user = await _userManager.FindByIdAsync(id);
+            if (user == null) return NotFound();
+
+            var allRoles = _roleManager.Roles.Select(r => r.Name).ToList();
+            var userRoles = await _userManager.GetRolesAsync(user);
+
+n            var model = new ManageUserRolesViewModel
+            {
+                UserId = user.Id,
+                UserName = user.UserName,
+                Roles = allRoles.Select(r => new RoleSelection { RoleName = r, Selected = userRoles.Contains(r) }).ToList()
+            };
+
+n            return View(model);
+        }
+
+n        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateUserRoles(ManageUserRolesViewModel model)
+        {
+            if (!await IsAdminAsync()) return Unauthorized();
+            var user = await _userManager.FindByIdAsync(model.UserId);
+            if (user == null) return NotFound();
+
+n            var currentRoles = await _userManager.GetRolesAsync(user);
+            var selectedRoles = model.Roles.Where(r => r.Selected).Select(r => r.RoleName).ToList();
+
+n            var rolesToAdd = selectedRoles.Except(currentRoles).ToList();
+            var rolesToRemove = currentRoles.Except(selectedRoles).ToList();
+
+n            if (rolesToAdd.Any()) await _userManager.AddToRolesAsync(user, rolesToAdd);
+            if (rolesToRemove.Any()) await _userManager.RemoveFromRolesAsync(user, rolesToRemove);
+
+n            TempData["SuccessMessage"] = "Kullanıcı rolleri güncellendi.";
+            return RedirectToAction(nameof(Users));
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteUserConfirm(string id)
@@ -152,5 +242,20 @@ namespace SeyitnameWebSite.Controllers
     {
         public string? Id { get; set; }
     }
+
+    // ----------------- Role management view models -----------------
+    public class ManageUserRolesViewModel
+    {
+        public string UserId { get; set; } = string.Empty;
+        public string UserName { get; set; } = string.Empty;
+        public List<RoleSelection> Roles { get; set; } = new();
+    }
+
+n    public class RoleSelection
+    {
+        public string RoleName { get; set; } = string.Empty;
+        public bool Selected { get; set; }
+    }
 }
+
 
