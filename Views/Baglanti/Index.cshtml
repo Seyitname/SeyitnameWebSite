@@ -16,11 +16,11 @@
             @foreach (var baglanti in Model)
             {
                 <div class="col-md-6 col-lg-4 portfolio-item">
-                    <div class="card-custom h-100 d-flex flex-column" style="cursor: pointer;" onclick="openLink('@baglanti.Link')">
+                    <div class="card-custom h-100 d-flex flex-column">
                         @if (!string.IsNullOrEmpty(baglanti.Picture))
                         {
                             <div class="mb-3" style="overflow: hidden; border-radius: 10px; height: 180px;">
-                                <img src="~/img/@baglanti.Picture" class="img-fluid w-100 h-100" style="object-fit: cover; transition: transform 0.3s ease;" alt="@baglanti.Name" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                                <img src="~/img/@baglanti.Picture" class="img-fluid w-100 h-100" style="object-fit: cover; transition: transform 0.3s ease;" alt="@baglanti.Name">
                             </div>
                         }
                         <h4 class="gradient-text mb-2">@baglanti.Name</h4>
@@ -28,9 +28,7 @@
                         <div class="d-flex gap-2">
                             @if (!string.IsNullOrEmpty(baglanti.Link))
                             {
-                                <button type="button" class="btn btn-custom btn-sm text-white flex-grow-1" onclick="event.stopPropagation(); openLink('@baglanti.Link')">
-                                    🔗 Ziyaret Et
-                                </button>
+                                <a href="@baglanti.Link" target="_blank" class="btn btn-custom btn-sm text-white flex-grow-1">🔗 Ziyaret Et</a>
                             }
                         </div>
                     </div>
@@ -48,6 +46,8 @@
     </div>
 </div>
 
+<!-- Disabled temporarily (JS) - openLink commented out -->
+<!--
 <script>
     // AI tarafından yapıldı - Link açma
     function openLink(url) {
@@ -56,3 +56,4 @@
         }
     }
 </script>
+-->

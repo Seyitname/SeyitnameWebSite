@@ -44,9 +44,7 @@
                                         <td>@user.Email</td>
                                         <td>@user.CreatedDate.ToString("dd.MM.yyyy HH:mm")</td>
                                         <td>
-                                            <button type="button" class="btn btn-sm btn-info me-2" title="Detayları Gör" onclick="location.href='/Admin/UserDetails/@user.Id'">
-                                                👁️ Görüntüle
-                                            </button>
+                                            <a href="/Admin/UserDetails/@user.Id" class="btn btn-sm btn-info me-2" title="Detayları Gör">👁️ Görüntüle</a>
                                             <a href="/Admin/ConfirmDeleteUser?id=@user.Id" class="btn btn-sm btn-danger" title="Sil">🗑️ Sil</a>
                                         </td>
                                     </tr>

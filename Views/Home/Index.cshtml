@@ -94,7 +94,7 @@
                             @if (!string.IsNullOrEmpty(baglanti.Picture))
                             {
                                 <div class="mb-3" style="overflow: hidden; border-radius: 10px; height: 150px;">
-                                    <img src="~/img/@baglanti.Picture" class="img-fluid w-100 h-100" style="object-fit: cover; transition: transform 0.3s ease;" alt="@baglanti.Name" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                                    <img src="~/img/@baglanti.Picture" class="img-fluid w-100 h-100" style="object-fit: cover; transition: transform 0.3s ease;" alt="@baglanti.Name"></div>
                                 </div>
                             }
                             <h4 class="gradient-text mb-2">@baglanti.Name</h4>
@@ -121,7 +121,8 @@
     </div>
 </section>
 
-<!-- Scroll Animation Script -->
+<!-- Disabled temporarily (JS) - Scroll animation commented out -->
+<!--
 <script>
     // AI tarafından yapıldı - Scroll animasyonu
     const observerOptions = {
@@ -146,3 +147,4 @@
         observer.observe(item);
     });
 </script>
+-->
