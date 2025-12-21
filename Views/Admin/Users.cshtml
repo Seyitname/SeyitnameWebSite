@@ -45,6 +45,7 @@
                                         <td>@user.CreatedDate.ToString("dd.MM.yyyy HH:mm")</td>
                                         <td>
                                             <a href="/Admin/UserDetails/@user.Id" class="btn btn-sm btn-info me-2" title="Detayları Gör">👁️ Görüntüle</a>
+                                            <a href="/Admin/ManageUserRoles?id=@user.Id" class="btn btn-sm btn-warning me-2" title="Rolleri Düzenle">⚙️ Roller</a>
                                             <a href="/Admin/ConfirmDeleteUser?id=@user.Id" class="btn btn-sm btn-danger" title="Sil">🗑️ Sil</a>
                                         </td>
                                     </tr>
