@@ -236,6 +236,17 @@ body {
     color: white;
 }
 
+/* Ensure all .btn elements show pointer cursor and are clearly clickable */
+.btn, a.btn, button.btn {
+    cursor: pointer !important;
+}
+
+/* Improve focus styles for accessibility */
+.btn:focus {
+    outline: 2px solid rgba(102,126,234,0.45);
+    box-shadow: 0 0 0 4px rgba(102,126,234,0.08);
+}
+
 /* Kart Stili */
 .card-custom {
     background: rgba(26, 26, 46, 0.8);

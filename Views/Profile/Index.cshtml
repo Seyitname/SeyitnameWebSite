@@ -76,41 +76,4 @@
     <div class="alert alert-danger mt-3">@TempData["ErrorMessage"]</div>
 }
 
-<script>
-document.getElementById('confirmDeleteAccountBtn').addEventListener('click', async function() {
-    const password = document.getElementById('deletePassword').value;
-    
-    if (!password) {
-        alert('❌ Lütfen şifrenizi girin!');
-        return;
-    }
-    
-    try {
-        const response = await fetch(`/Profile/DeleteAccount`, {
-            method: 'POST',
-            credentials: 'same-origin',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ password: password })
-        });
 
-        if (response.status === 401) {
-            alert('❌ Giriş yapmanız gerekiyor. Lütfen giriş yapın.');
-            return;
-        }
-
-        const data = await response.json().catch(() => null);
-
-        if (response.ok && data && data.success) {
-            alert('✅ Hesabınız silindi! Anasayfaya yönlendiriliyorsunuz...');
-            window.location.href = '/';
-        } else {
-            alert('❌ ' + (data?.message || 'Silme işlemi başarısız!'));
-        }
-    } catch (error) {
-        console.error('Hata:', error);
-        alert('❌ Bir hata oluştu!');
-    }
-});
-</script>

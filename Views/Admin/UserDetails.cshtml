@@ -79,62 +79,13 @@
                     <a href="/Admin/Users" class="btn btn-outline-secondary">
                         ← Üye Listesine Dön
                     </a>
-                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                        🗑️ Kullanıcıyı Sil
-                    </button>
+                    <form asp-action="DeleteUserConfirm" method="post" class="d-inline" onsubmit="return confirm('Kullanıcı kalıcı olarak silinecek. Emin misiniz?');">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@Model?.Id" />
+                        <button type="submit" class="btn btn-danger">🗑️ Kullanıcıyı Sil</button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<!-- Delete Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content" style="background-color: rgba(15, 12, 41, 0.95); border: 1px solid rgba(102, 126, 234, 0.3);">
-            <div class="modal-header border-secondary">
-                <h5 class="modal-title gradient-text" id="deleteModalLabel">⚠️ Kullanıcıyı Kalıcı Olarak Sil</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body text-light">
-                <p><strong>@Model?.UserName</strong> kalıcı olarak silinecek!</p>
-                <p class="text-warning">⚠️ <strong>Bu işlem geri alınamaz! Tüm veriler kaybolacak!</strong></p>
-                <ul class="text-warning small">
-                    <li>Profil bilgileri silinecek</li>
-                    <li>Hesap erişimi sonlandırılacak</li>
-                    <li>Veriler kurtarılamayacak</li>
-                </ul>
-            </div>
-            <div class="modal-footer border-secondary">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal Et</button>
-                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Evet, Kalıcı Olarak Sil</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-document.getElementById('confirmDeleteBtn').addEventListener('click', async function() {
-    const userId = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model?.Id));
-    
-    try {
-        const response = await fetch(`/Admin/DeleteUser`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ id: userId })
-        });
-
-        if (response.ok) {
-            alert('✅ Kullanıcı başarıyla silindi!');
-            window.location.href = '/Admin/Users';
-        } else {
-            alert('❌ Silme işlemi başarısız!');
-        }
-    } catch (error) {
-        console.error('Hata:', error);
-        alert('❌ Bir hata oluştu!');
-    }
-});
-</script>
