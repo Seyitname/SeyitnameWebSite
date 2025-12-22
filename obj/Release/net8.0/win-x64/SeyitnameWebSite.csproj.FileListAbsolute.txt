@@ -436,3 +436,9 @@ C:\Users\seyit\Desktop\SeyitnameWebSite\obj\Release\net8.0\win-x64\refint\Seyitn
 C:\Users\seyit\Desktop\SeyitnameWebSite\obj\Release\net8.0\win-x64\SeyitnameWebSite.pdb
 C:\Users\seyit\Desktop\SeyitnameWebSite\obj\Release\net8.0\win-x64\SeyitnameWebSite.genruntimeconfig.cache
 C:\Users\seyit\Desktop\SeyitnameWebSite\obj\Release\net8.0\win-x64\ref\SeyitnameWebSite.dll
+C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Release\net8.0\win-x64\publish\web.config
+C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Release\net8.0\win-x64\publish\appsettings.Development.json
+C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Release\net8.0\win-x64\publish\appsettings.json
+C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Release\net8.0\win-x64\publish\SeyitnameWebSite.deps.json
+C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Release\net8.0\win-x64\publish\SeyitnameWebSite.runtimeconfig.json
+C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Release\net8.0\win-x64\publish\SeyitnameWebSite.staticwebassets.endpoints.json
