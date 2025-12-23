@@ -1,4 +1,5 @@
 C:\Users\seyit\Desktop\SeyitnameWebSite\publish\SeyitnameWebSite.exe
+C:\Users\seyit\Desktop\SeyitnameWebSite\publish\publish\publish\publish\web.config
 C:\Users\seyit\Desktop\SeyitnameWebSite\publish\publish\publish\web.config
 C:\Users\seyit\Desktop\SeyitnameWebSite\publish\publish\web.config
 C:\Users\seyit\Desktop\SeyitnameWebSite\publish\appsettings.Development.json
@@ -7,6 +8,11 @@ C:\Users\seyit\Desktop\SeyitnameWebSite\publish\publish\appsettings.Development.
 C:\Users\seyit\Desktop\SeyitnameWebSite\publish\publish\appsettings.json
 C:\Users\seyit\Desktop\SeyitnameWebSite\publish\publish\publish\appsettings.Development.json
 C:\Users\seyit\Desktop\SeyitnameWebSite\publish\publish\publish\appsettings.json
+C:\Users\seyit\Desktop\SeyitnameWebSite\publish\publish\publish\publish\appsettings.Development.json
+C:\Users\seyit\Desktop\SeyitnameWebSite\publish\publish\publish\publish\appsettings.json
+C:\Users\seyit\Desktop\SeyitnameWebSite\publish\publish\publish\publish\SeyitnameWebSite.deps.json
+C:\Users\seyit\Desktop\SeyitnameWebSite\publish\publish\publish\publish\SeyitnameWebSite.runtimeconfig.json
+C:\Users\seyit\Desktop\SeyitnameWebSite\publish\publish\publish\publish\SeyitnameWebSite.staticwebassets.endpoints.json
 C:\Users\seyit\Desktop\SeyitnameWebSite\publish\publish\publish\SeyitnameWebSite.deps.json
 C:\Users\seyit\Desktop\SeyitnameWebSite\publish\publish\publish\SeyitnameWebSite.runtimeconfig.json
 C:\Users\seyit\Desktop\SeyitnameWebSite\publish\publish\publish\SeyitnameWebSite.staticwebassets.endpoints.json

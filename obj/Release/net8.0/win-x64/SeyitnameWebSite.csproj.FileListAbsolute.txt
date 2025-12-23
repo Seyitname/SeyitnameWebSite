@@ -448,3 +448,9 @@ C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Release\net8.0\win-x64\publish\publi
 C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Release\net8.0\win-x64\publish\publish\SeyitnameWebSite.deps.json
 C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Release\net8.0\win-x64\publish\publish\SeyitnameWebSite.runtimeconfig.json
 C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Release\net8.0\win-x64\publish\publish\SeyitnameWebSite.staticwebassets.endpoints.json
+C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Release\net8.0\win-x64\publish\publish\publish\web.config
+C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Release\net8.0\win-x64\publish\publish\publish\appsettings.Development.json
+C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Release\net8.0\win-x64\publish\publish\publish\appsettings.json
+C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Release\net8.0\win-x64\publish\publish\publish\SeyitnameWebSite.deps.json
+C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Release\net8.0\win-x64\publish\publish\publish\SeyitnameWebSite.runtimeconfig.json
+C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Release\net8.0\win-x64\publish\publish\publish\SeyitnameWebSite.staticwebassets.endpoints.json
