@@ -19,3 +19,6 @@ desktop.ini
 
 # Ignore local SQLite DB files
 mydb.db*
+
+# Yedeklenen dosyalar
+.backup/
