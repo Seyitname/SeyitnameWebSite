@@ -1,0 +1,91 @@
+<!-- AI tarafından yapıldı - Admin Kullanıcı Detayları -->
+@model SeyitnameWebSite.Data.User
+@{
+    ViewData["Title"] = "Kullanıcı Detayları - Admin Paneli";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="text-center mb-5 portfolio-item">
+                <h1 class="hero-title mb-2">👤 Kullanıcı Detayları</h1>
+                <p class="hero-subtitle">@Model?.UserName</p>
+            </div>
+
+            <div class="card-custom portfolio-item">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h5 class="text-muted">👨‍💻 Kullanıcı Adı</h5>
+                        <p class="gradient-text h5">@Model?.UserName</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h5 class="text-muted">🔑 Kullanıcı ID</h5>
+                        <p class="text-light small">@Model?.Id</p>
+                    </div>
+                </div>
+
+                <hr class="border-secondary" />
+
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h5 class="text-muted">👤 Ad-Soyad</h5>
+                        <p class="text-light">@Model?.FullName</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h5 class="text-muted">📧 E-posta</h5>
+                        <p class="text-light">@Model?.Email</p>
+                    </div>
+                </div>
+
+                <hr class="border-secondary" />
+
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h5 class="text-muted">📅 Üye Olma Tarihi</h5>
+                        <p class="text-light">@Model?.CreatedDate.ToString("dd.MM.yyyy HH:mm:ss")</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h5 class="text-muted">📞 Telefon</h5>
+                        <p class="text-light">@(string.IsNullOrEmpty(Model?.PhoneNumber) ? "Kayıtlı değil" : Model.PhoneNumber)</p>
+                    </div>
+                </div>
+
+                <hr class="border-secondary" />
+
+                @if (!string.IsNullOrEmpty(Model?.Bio))
+                {
+                    <div class="mb-4">
+                        <h5 class="text-muted">📝 Biyografi</h5>
+                        <p class="text-light">@Model.Bio</p>
+                    </div>
+
+                    <hr class="border-secondary" />
+                }
+
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h5 class="text-muted">🔒 İki Faktörlü Kimlik Doğrulama</h5>
+                        <p class="text-light">@(Model?.TwoFactorEnabled == true ? "✅ Etkin" : "❌ Kapalı")</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h5 class="text-muted">🔐 E-posta Doğrulandı</h5>
+                        <p class="text-light">@(Model?.EmailConfirmed == true ? "✅ Evet" : "❌ Hayır")</p>
+                    </div>
+                </div>
+
+                <hr class="border-secondary" />
+
+                <div class="d-flex gap-2 flex-wrap">
+                    <a href="/Admin/Users" class="btn btn-outline-secondary">
+                        ← Üye Listesine Dön
+                    </a>
+                    <form asp-action="DeleteUserConfirm" method="post" class="d-inline" onsubmit="return confirm('Kullanıcı kalıcı olarak silinecek. Emin misiniz?');">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@Model?.Id" />
+                        <button type="submit" class="btn btn-danger">🗑️ Kullanıcıyı Sil</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

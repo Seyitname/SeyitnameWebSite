@@ -1,0 +1,18 @@
+<!-- AI tarafından yapıldı - Admin Link Partial View -->
+@inject Microsoft.AspNetCore.Identity.UserManager<SeyitnameWebSite.Data.User> UserManager
+
+@{
+    var currentUser = await UserManager.GetUserAsync(User);
+    var isAdmin = currentUser != null && await UserManager.IsInRoleAsync(currentUser, "Admin");
+}
+
+@if (User?.Identity?.IsAuthenticated == true && isAdmin)
+{
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle nav-link-custom" href="#" role="button" data-bs-toggle="dropdown" style="color: #f093fb;">⚙️ Admin</a>
+        <ul class="dropdown-menu dropdown-menu-dark">
+            <li><a class="dropdown-item" asp-controller="Admin" asp-action="Users">Üyeler</a></li>
+            <li><a class="dropdown-item" asp-controller="Admin" asp-action="Roles">Roller</a></li>
+        </ul>
+    </li>
+}

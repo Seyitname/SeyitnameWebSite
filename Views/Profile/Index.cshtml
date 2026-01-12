@@ -1,0 +1,79 @@
+<!-- AI tarafından yapıldı - User Profile Page -->
+@model SeyitnameWebSite.Data.User
+@{
+    ViewData["Title"] = "Profilim - Seyitname";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="text-center mb-5 portfolio-item">
+                <h1 class="hero-title mb-3">👤 Profilim</h1>
+                <p class="hero-subtitle">Kişisel Bilgilerim</p>
+            </div>
+
+            <div class="card-custom portfolio-item">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h5 class="text-muted">👨‍💼 Kullanıcı Adı</h5>
+                        <p class="gradient-text h5">@Model?.UserName</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h5 class="text-muted">✉️ E-posta</h5>
+                        <p class="gradient-text h5">@Model?.Email</p>
+                    </div>
+                </div>
+
+                <hr class="border-secondary" />
+
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h5 class="text-muted">👤 Ad-Soyad</h5>
+                        <p class="text-light">@Model?.FullName</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h5 class="text-muted">📅 Üye Olduğu Tarih</h5>
+                        <p class="text-light">@Model?.CreatedDate.ToString("dd.MM.yyyy")</p>
+                    </div>
+                </div>
+
+                <hr class="border-secondary" />
+
+                @if (!string.IsNullOrEmpty(Model?.Bio))
+                {
+                    <div class="mb-4">
+                        <h5 class="text-muted">📝 Biyografi</h5>
+                        <p class="text-light">@Model.Bio</p>
+                    </div>
+
+                    <hr class="border-secondary" />
+                }
+
+                <div class="d-flex gap-2 flex-wrap">
+                    <a href="/Profile/Edit" class="btn btn-custom text-white flex-grow-1">
+                        ✏️ Profili Düzenle
+                    </a>
+                    <form asp-controller="Account" asp-action="Logout" method="post" class="flex-grow-1">
+                        <button type="submit" class="btn btn-outline-secondary w-100">
+                            🚪 Çıkış Yap
+                        </button>
+                    </form>
+                    <a href="/Profile/ConfirmDeleteAccount" class="btn btn-outline-danger flex-grow-1">🗑️ Hesabı Sil</a>
+                </div>
+            </div>
+
+            <div class="text-center mt-5">
+                <a href="/" class="btn btn-outline-primary">← Anasayfaya Dön</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (TempData["SuccessMessage"] != null) {
+    <div class="alert alert-success mt-3">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null) {
+    <div class="alert alert-danger mt-3">@TempData["ErrorMessage"]</div>
+}
+
+
