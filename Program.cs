@@ -7,27 +7,12 @@ var builder = WebApplication.CreateBuilder(args);
 // --------------------
 // DATABASE (PostgreSQL)
 // --------------------
-var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+var connectionString =
+    Environment.GetEnvironmentVariable("DATABASE_INTERNAL_URL");
 
-string connectionString;
-
-if (!string.IsNullOrEmpty(databaseUrl))
+if (string.IsNullOrEmpty(connectionString))
 {
-    var uri = new Uri(databaseUrl);
-
-    var userInfo = uri.UserInfo.Split(':');
-
-    connectionString =
-        $"Host={uri.Host};" +
-        $"Port={uri.Port};" +
-        $"Database={uri.AbsolutePath.TrimStart('/')};" +
-        $"Username={userInfo[0]};" +
-        $"Password={userInfo[1]};" +
-        $"SSL Mode=Require;Trust Server Certificate=true";
-}
-else
-{
-    connectionString = builder.Configuration.GetConnectionString("database");
+    throw new Exception("DATABASE_INTERNAL_URL is not set");
 }
 
 builder.Services.AddDbContext<DataContext>(options =>
