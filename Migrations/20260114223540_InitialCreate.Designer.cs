@@ -11,14 +11,14 @@ using SeyitnameWebSite.Data;
 namespace SeyitnameWebSite.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20251123180644_AddIdentityTables")]
-    partial class AddIdentityTables
+    [Migration("20260114223540_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.15");
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.6");
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {

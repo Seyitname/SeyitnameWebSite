@@ -142,3 +142,10 @@ C:\Users\seyit\Desktop\SeyitnameWebSite\obj\Debug\net8.0\refint\SeyitnameWebSite
 C:\Users\seyit\Desktop\SeyitnameWebSite\obj\Debug\net8.0\SeyitnameWebSite.pdb
 C:\Users\seyit\Desktop\SeyitnameWebSite\obj\Debug\net8.0\SeyitnameWebSite.genruntimeconfig.cache
 C:\Users\seyit\Desktop\SeyitnameWebSite\obj\Debug\net8.0\ref\SeyitnameWebSite.dll
+C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Debug\net8.0\publish\publish\web.config
+C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Debug\net8.0\publish\global.json
+C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Debug\net8.0\publish\publish\appsettings.Development.json
+C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Debug\net8.0\publish\publish\appsettings.json
+C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Debug\net8.0\publish\publish\SeyitnameWebSite.deps.json
+C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Debug\net8.0\publish\publish\SeyitnameWebSite.runtimeconfig.json
+C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Debug\net8.0\publish\publish\SeyitnameWebSite.staticwebassets.endpoints.json
