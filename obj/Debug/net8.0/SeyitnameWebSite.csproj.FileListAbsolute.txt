@@ -149,3 +149,5 @@ C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Debug\net8.0\publish\publish\appsett
 C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Debug\net8.0\publish\publish\SeyitnameWebSite.deps.json
 C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Debug\net8.0\publish\publish\SeyitnameWebSite.runtimeconfig.json
 C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Debug\net8.0\publish\publish\SeyitnameWebSite.staticwebassets.endpoints.json
+C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Debug\net8.0\Npgsql.dll
+C:\Users\seyit\Desktop\SeyitnameWebSite\bin\Debug\net8.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll

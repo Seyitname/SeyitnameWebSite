@@ -1,22 +1,22 @@
-// AI tarafından yapıldı: Program.cs içinde yapılan DB ve routing değişiklikleri AI tarafından eklendi.
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using SeyitnameWebSite.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllersWithViews();
+// --------------------
+// DATABASE (PostgreSQL)
+// --------------------
+var connectionString =
+    Environment.GetEnvironmentVariable("DATABASE_URL")
+    ?? builder.Configuration.GetConnectionString("database");
 
-builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<DataContext>(options =>
-{
-    var config = builder.Configuration;
-    var connectionString = config.GetConnectionString("database");
-    options.UseSqlite(connectionString);
-});
+    options.UseNpgsql(connectionString));
 
-// AI tarafından yapıldı - Identity konfigürasyonu
+// --------------------
+// IDENTITY
+// --------------------
 builder.Services.AddIdentity<User, IdentityRole>(options =>
 {
     options.Password.RequiredLength = 6;
@@ -28,6 +28,11 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 .AddEntityFrameworkStores<DataContext>()
 .AddDefaultTokenProviders();
 
+// --------------------
+// MVC
+// --------------------
+builder.Services.AddControllersWithViews();
+
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Account/Login";
@@ -37,54 +42,54 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 var app = builder.Build();
 
-// AI tarafından yapıldı: Veritabanı migration'larını otomatik olarak uygula
+// --------------------
+// MIGRATION + SEED
+// --------------------
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<DataContext>();
+    var services = scope.ServiceProvider;
+
+    var db = services.GetRequiredService<DataContext>();
     db.Database.Migrate();
 
-    // Ensure roles exist and seed Admin role if missing
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
-    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = services.GetRequiredService<UserManager<User>>();
+    var logger = services.GetRequiredService<ILogger<Program>>();
 
     try
     {
-        // Seed default roles
-        var defaultRoles = new[] { "Admin", "Member" };
-        foreach (var roleName in defaultRoles)
+        var roles = new[] { "Admin", "Member" };
+
+        foreach (var role in roles)
         {
-            var exists = roleManager.RoleExistsAsync(roleName).GetAwaiter().GetResult();
-            if (!exists)
+            if (!roleManager.RoleExistsAsync(role).Result)
             {
-                logger.LogInformation("Creating '{role}' role in database.", roleName);
-                roleManager.CreateAsync(new IdentityRole(roleName)).GetAwaiter().GetResult();
+                roleManager.CreateAsync(new IdentityRole(role)).Wait();
             }
         }
 
-        // If there is exactly one user, make them Admin for initial setup
         var users = db.Users.ToList();
         if (users.Count == 1)
         {
-            var firstUser = users[0];
-            if (!userManager.IsInRoleAsync(firstUser, "Admin").GetAwaiter().GetResult())
+            var user = users.First();
+            if (!userManager.IsInRoleAsync(user, "Admin").Result)
             {
-                logger.LogInformation("Assigning 'Admin' role to first user: {UserId}", firstUser.Id);
-                userManager.AddToRoleAsync(firstUser, "Admin").GetAwaiter().GetResult();
+                userManager.AddToRoleAsync(user, "Admin").Wait();
             }
         }
     }
     catch (Exception ex)
     {
-        logger.LogError(ex, "Error while ensuring roles are created");
+        logger.LogError(ex, "Error during DB migration or role seeding");
     }
 }
 
-// Configure the HTTP request pipeline.
+// --------------------
+// PIPELINE
+// --------------------
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -93,12 +98,11 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// AI tarafından yapıldı - Authentication ve Authorization pipeline'ı
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
