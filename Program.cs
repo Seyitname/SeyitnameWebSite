@@ -8,8 +8,12 @@ var builder = WebApplication.CreateBuilder(args);
 // DATABASE (PostgreSQL)
 // --------------------
 var connectionString =
-    Environment.GetEnvironmentVariable("DATABASE_INTERNAL_URL")
-    ?? throw new Exception("DATABASE_INTERNAL_URL is not set");
+    Environment.GetEnvironmentVariable("DATABASE_INTERNAL_URL");
+
+if (string.IsNullOrEmpty(connectionString))
+{
+    throw new Exception("DATABASE_INTERNAL_URL is not set");
+}
 
 builder.Services.AddDbContext<DataContext>(options =>
     options.UseNpgsql(connectionString));
