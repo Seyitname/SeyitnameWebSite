@@ -420,6 +420,37 @@ body {
 
     .card-custom {
         padding: 1.5rem;
+        margin: 1rem;
+    }
+
+    .btn-custom {
+        padding: 15px 30px;
+        font-size: 1.1rem;
+        width: 100% !important;
+        margin-bottom: 1rem;
+    }
+
+    .form-control-custom {
+        font-size: 1rem;
+        padding: 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .form-label {
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .card-body {
+        padding: 2rem 1.5rem !important;
+    }
+
+    .gradient-text {
+        font-size: 1.2rem;
+    }
+
+    .form-page-bg {
+        padding: 1rem;
     }
 }
 
