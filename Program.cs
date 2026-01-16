@@ -2,7 +2,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SeyitnameWebSite.Data;
 
+// 🔥 BUNU EKLE (EN ÜSTE)
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 var builder = WebApplication.CreateBuilder(args);
+
 
 // --------------------
 // DATABASE (PostgreSQL)
