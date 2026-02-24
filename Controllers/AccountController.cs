@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using SeyitnameWebSite.Data;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace SeyitnameWebSite.Controllers;
 
@@ -28,11 +30,22 @@ public class AccountController : Controller
     {
         if (ModelState.IsValid)
         {
+            // Email gerçekliğini basit kontrol et (4. madde)
+            if (!IsValidEmailDomain(model.Email))
+            {
+                ModelState.AddModelError("Email", "Geçerli bir e-posta adresi girin");
+                return View(model);
+            }
+
+            // Benzersiz tag oluştur (6. madde)
+            var tag = await GenerateUniqueTag();
+
             var user = new User
             {
                 UserName = model.Username,
                 Email = model.Email,
-                FullName = model.FullName
+                FullName = model.FullName,
+                Tag = tag // Otomatik tag ekle
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
@@ -90,6 +103,26 @@ public class AccountController : Controller
     public IActionResult AccessDenied()
     {
         return View();
+    }
+
+    // Yardımcı metodlar
+    private bool IsValidEmailDomain(string email)
+    {
+        // Basit email domain kontrolü - gerçek SMTP kontrolü yerine
+        var domains = new[] { "gmail.com", "yahoo.com", "hotmail.com", "outlook.com", "yandex.com", "icloud.com" };
+        var domain = email.Split('@').LastOrDefault()?.ToLower();
+        return domains.Contains(domain);
+    }
+
+    private async Task<string> GenerateUniqueTag()
+    {
+        var random = new Random();
+        string tag;
+        do
+        {
+            tag = $"[{random.Next(100, 999)}]";
+        } while (await _userManager.Users.AnyAsync(u => u.Tag == tag));
+        return tag;
     }
 }
 

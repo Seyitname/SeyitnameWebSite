@@ -47,6 +47,12 @@
                             <li class="nav-item">
                                 <a class="nav-link nav-link-custom" asp-controller="Profile" asp-action="Index">Hoşgeldin, @User.Identity.Name!</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link nav-link-custom" asp-controller="User" asp-action="Index">👥 Kullanıcılar</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link nav-link-custom" asp-controller="Chat" asp-action="Index">💬 Chat</a>
+                            </li>
                             @await Html.PartialAsync("_AdminNavLink")
                             <li class="nav-item">
                                 <form asp-controller="Account" asp-action="Logout" method="post" style="display:inline;">
@@ -104,6 +110,8 @@
             </div>
         </div>
     </footer>
+
+    @RenderSection("Styles", required: false)
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="/Identity/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

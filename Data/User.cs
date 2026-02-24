@@ -12,4 +12,11 @@ public class User : IdentityUser
     public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
     public string? Bio { get; set; }
+
+    // Kullanıcı adı yanına eklenecek tag (örneğin [001])
+    public string Tag { get; set; } = string.Empty;
+
+    // Chat için mute/ban durumları
+    public bool IsMuted { get; set; } = false;
+    public bool IsBanned { get; set; } = false;
 }

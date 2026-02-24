@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SeyitnameWebSite.Data;
+using SeyitnameWebSite.Hubs;
 
 // 🔥 BUNU EKLE (EN ÜSTE)
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
@@ -11,16 +12,30 @@ var builder = WebApplication.CreateBuilder(args);
 // --------------------
 // DATABASE (PostgreSQL)
 // --------------------
-var connectionString =
-    Environment.GetEnvironmentVariable("DATABASE_INTERNAL_URL");
-
-if (string.IsNullOrEmpty(connectionString))
-{
-    throw new Exception("DATABASE_INTERNAL_URL is not set");
-}
+// --------------------
+// DATABASE
+// --------------------
+var connectionString = builder.Configuration.GetConnectionString("database");
 
 builder.Services.AddDbContext<DataContext>(options =>
-    options.UseNpgsql(connectionString));
+{
+    if (builder.Environment.IsDevelopment())
+    {
+        // LOCAL → SQLite
+        options.UseSqlite(connectionString);
+    }
+    else
+    {
+        // PRODUCTION → PostgreSQL (Render)
+        var pgConnection =
+            Environment.GetEnvironmentVariable("DATABASE_INTERNAL_URL");
+
+        if (string.IsNullOrEmpty(pgConnection))
+            throw new Exception("DATABASE_INTERNAL_URL is not set");
+
+        options.UseNpgsql(pgConnection);
+    }
+});
 
 
 // --------------------
@@ -33,9 +48,18 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
     options.Password.RequireLowercase = false;
     options.Password.RequireUppercase = false;
     options.Password.RequireNonAlphanumeric = false;
+
+    // Email confirmation kaldırıldı (3. madde)
+    options.SignIn.RequireConfirmedEmail = false;
+    options.SignIn.RequireConfirmedPhoneNumber = false;
 })
 .AddEntityFrameworkStores<DataContext>()
 .AddDefaultTokenProviders();
+
+// --------------------
+// SIGNALR (Chat için)
+// --------------------
+builder.Services.AddSignalR();
 
 // --------------------
 // MVC
@@ -54,8 +78,12 @@ var app = builder.Build();
 // --------------------
 // MIGRATION + SEED
 // --------------------
-using (var scope = app.Services.CreateScope())
+// --------------------
+// MIGRATION + SEED
+// --------------------
+if (!app.Environment.IsDevelopment())
 {
+    using var scope = app.Services.CreateScope();
     var services = scope.ServiceProvider;
 
     var db = services.GetRequiredService<DataContext>();
@@ -113,5 +141,8 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+// Chat hub'ını map et
+app.MapHub<ChatHub>("/chatHub");
 
 app.Run();

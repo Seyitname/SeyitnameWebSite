@@ -1,0 +1,41 @@
+@model IEnumerable<SeyitnameWebSite.Data.User>
+@{
+    ViewData["Title"] = "Kullanıcılar";
+}
+
+<!-- Kullanıcı arama ve listeleme sayfası -->
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-center gradient-text mb-4">Kullanıcı Ara</h1>
+
+            <!-- Arama formu -->
+            <form method="get" class="mb-4">
+                <div class="input-group">
+                    <input type="text" name="searchTerm" value="@ViewBag.SearchTerm" class="form-control form-control-custom" placeholder="Kullanıcı adı veya isim ara..." />
+                    <button type="submit" class="btn btn-custom">Ara</button>
+                </div>
+            </form>
+
+            <!-- Kullanıcı listesi -->
+            <div class="row">
+                @foreach (var user in Model)
+                {
+                    <div class="col-md-4 mb-3">
+                        <div class="card card-custom">
+                            <div class="card-body text-center">
+                                <h5 class="card-title gradient-text">@user.UserName@user.Tag</h5>
+                                <p class="card-text">@user.FullName</p>
+                                @if (!string.IsNullOrEmpty(user.Bio))
+                                {
+                                    <p class="text-muted small">@user.Bio</p>
+                                }
+                                <a asp-action="Profile" asp-route-userName="@user.UserName" class="btn btn-custom btn-sm">Profili Görüntüle</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SeyitnameWebSite.Data;
+using System.ComponentModel.DataAnnotations;
 
 namespace SeyitnameWebSite.Controllers;
 
@@ -100,6 +101,38 @@ public class ProfileController : Controller
         return Json(new { success = false, message = "Silme işlemi başarısız!" });
     }
 
+    // Şifre değiştirme sayfası (5. madde)
+    [HttpGet]
+    public IActionResult ChangePassword()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ChangePassword(ChangePasswordModel model)
+    {
+        if (!ModelState.IsValid)
+            return View(model);
+
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return NotFound();
+
+        var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+        if (result.Succeeded)
+        {
+            await _signInManager.RefreshSignInAsync(user);
+            TempData["Success"] = "Şifre başarıyla değiştirildi!";
+            return RedirectToAction("Index");
+        }
+
+        foreach (var error in result.Errors)
+            ModelState.AddModelError("", error.Description);
+
+        return View(model);
+    }
+
     [HttpGet]
     public IActionResult ConfirmDeleteAccount()
     {
@@ -151,6 +184,24 @@ public class EditProfileModel
 
     [System.ComponentModel.DataAnnotations.StringLength(500)]
     public string? Bio { get; set; }
+}
+
+// AI tarafından yapıldı - Change Password Model
+public class ChangePasswordModel
+{
+    [System.ComponentModel.DataAnnotations.Required(ErrorMessage = "Mevcut şifre zorunludur")]
+    [DataType(DataType.Password)]
+    public string CurrentPassword { get; set; } = string.Empty;
+
+    [System.ComponentModel.DataAnnotations.Required(ErrorMessage = "Yeni şifre zorunludur")]
+    [StringLength(100, MinimumLength = 6, ErrorMessage = "Yeni şifre en az 6 karakter olmalıdır")]
+    [DataType(DataType.Password)]
+    public string NewPassword { get; set; } = string.Empty;
+
+    [System.ComponentModel.DataAnnotations.Required(ErrorMessage = "Şifre onayı zorunludur")]
+    [Compare("NewPassword", ErrorMessage = "Yeni şifreler eşleşmiyor")]
+    [DataType(DataType.Password)]
+    public string ConfirmNewPassword { get; set; } = string.Empty;
 }
 
 // AI tarafından yapıldı - Delete Account Model

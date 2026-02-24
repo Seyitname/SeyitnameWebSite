@@ -1,9 +1,9 @@
 /* AI tarafından yapıldı - Modern Portfolio Animasyonları ve Şekillendirme */
 
 :root {
-    --primary-color: #667eea;
-    --secondary-color: #764ba2;
-    --accent-color: #f093fb;
+    --primary-color: #00ff88; /* Yeşil */
+    --secondary-color: #00ffff; /* Cyan */
+    --accent-color: #00ff88; /* Yeşil */
     --dark-bg: #0f0c29;
     --darker-bg: #1a1a2e;
     --text-light: #eaeaea;
