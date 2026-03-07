@@ -130,6 +130,14 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+var pgConnection = Environment.GetEnvironmentVariable("DATABASE_INTERNAL_URL");
+
+// postgresql:// formatını Npgsql'e uygun hale getir
+var uri = new Uri(pgConnection!);
+var npgsqlConn = $"Host={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.TrimStart('/')};Username={uri.UserInfo.Split(':')[0]};Password={uri.UserInfo.Split(':')[1]};SSL Mode=Require;Trust Server Certificate=true";
+
+options.UseNpgsql(npgsqlConn);
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
