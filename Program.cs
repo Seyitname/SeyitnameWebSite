@@ -28,8 +28,9 @@ builder.Services.AddDbContext<DataContext>(options =>
             throw new Exception("DATABASE_INTERNAL_URL is not set");
 
         // postgresql:// formatını Npgsql'e çevir
-        var uri = new Uri(pgRaw);
-        var npgsqlConn = $"Host={uri.Host};Port={uri.Port};" +
+var uri = new Uri(pgRaw);
+        var port = uri.Port > 0 ? uri.Port : 5432;
+        var npgsqlConn = $"Host={uri.Host};Port={port};" +
                          $"Database={uri.AbsolutePath.TrimStart('/')};" +
                          $"Username={uri.UserInfo.Split(':')[0]};" +
                          $"Password={uri.UserInfo.Split(':')[1]};" +
