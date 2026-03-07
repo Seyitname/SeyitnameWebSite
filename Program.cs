@@ -3,15 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using SeyitnameWebSite.Data;
 using SeyitnameWebSite.Hubs;
 
-// 🔥 BUNU EKLE (EN ÜSTE)
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 var builder = WebApplication.CreateBuilder(args);
 
-
-// --------------------
-// DATABASE (PostgreSQL)
-// --------------------
 // --------------------
 // DATABASE
 // --------------------
@@ -27,16 +22,22 @@ builder.Services.AddDbContext<DataContext>(options =>
     else
     {
         // PRODUCTION → PostgreSQL (Render)
-        var pgConnection =
-            Environment.GetEnvironmentVariable("DATABASE_INTERNAL_URL");
+        var pgRaw = Environment.GetEnvironmentVariable("DATABASE_INTERNAL_URL");
 
-        if (string.IsNullOrEmpty(pgConnection))
+        if (string.IsNullOrEmpty(pgRaw))
             throw new Exception("DATABASE_INTERNAL_URL is not set");
 
-        options.UseNpgsql(pgConnection);
+        // postgresql:// formatını Npgsql'e çevir
+        var uri = new Uri(pgRaw);
+        var npgsqlConn = $"Host={uri.Host};Port={uri.Port};" +
+                         $"Database={uri.AbsolutePath.TrimStart('/')};" +
+                         $"Username={uri.UserInfo.Split(':')[0]};" +
+                         $"Password={uri.UserInfo.Split(':')[1]};" +
+                         $"SSL Mode=Require;Trust Server Certificate=true";
+
+        options.UseNpgsql(npgsqlConn);
     }
 });
-
 
 // --------------------
 // IDENTITY
@@ -49,7 +50,6 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
     options.Password.RequireUppercase = false;
     options.Password.RequireNonAlphanumeric = false;
 
-    // Email confirmation kaldırıldı (3. madde)
     options.SignIn.RequireConfirmedEmail = false;
     options.SignIn.RequireConfirmedPhoneNumber = false;
 })
@@ -57,7 +57,7 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 .AddDefaultTokenProviders();
 
 // --------------------
-// SIGNALR (Chat için)
+// SIGNALR
 // --------------------
 builder.Services.AddSignalR();
 
@@ -75,9 +75,6 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 var app = builder.Build();
 
-// --------------------
-// MIGRATION + SEED
-// --------------------
 // --------------------
 // MIGRATION + SEED
 // --------------------
@@ -130,14 +127,6 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-var pgConnection = Environment.GetEnvironmentVariable("DATABASE_INTERNAL_URL");
-
-// postgresql:// formatını Npgsql'e uygun hale getir
-var uri = new Uri(pgConnection!);
-var npgsqlConn = $"Host={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.TrimStart('/')};Username={uri.UserInfo.Split(':')[0]};Password={uri.UserInfo.Split(':')[1]};SSL Mode=Require;Trust Server Certificate=true";
-
-options.UseNpgsql(npgsqlConn);
-
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
@@ -150,7 +139,6 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-// Chat hub'ını map et
 app.MapHub<ChatHub>("/chatHub");
 
 app.Run();
