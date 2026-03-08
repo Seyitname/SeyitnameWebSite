@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SeyitnameWebSite.Data;
+using SeyitnameWebSite.Hubs;
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
@@ -26,8 +27,7 @@ builder.Services.AddDbContext<DataContext>(options =>
         if (string.IsNullOrEmpty(pgRaw))
             throw new Exception("DATABASE_INTERNAL_URL is not set");
 
-        // postgresql:// formatını Npgsql'e çevir
-var uri = new Uri(pgRaw);
+        var uri = new Uri(pgRaw);
         var port = uri.Port > 0 ? uri.Port : 5432;
         var npgsqlConn = $"Host={uri.Host};Port={port};" +
                          $"Database={uri.AbsolutePath.TrimStart('/')};" +
@@ -57,6 +57,11 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 .AddDefaultTokenProviders();
 
 // --------------------
+// SIGNALR
+// --------------------
+builder.Services.AddSignalR();
+
+// --------------------
 // MVC
 // --------------------
 builder.Services.AddControllersWithViews();
@@ -73,41 +78,57 @@ var app = builder.Build();
 // --------------------
 // MIGRATION + SEED
 // --------------------
-using var scope = app.Services.CreateScope();
-var services = scope.ServiceProvider;
-
-var db = services.GetRequiredService<DataContext>();
-db.Database.Migrate();
-
-var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-var userManager = services.GetRequiredService<UserManager<User>>();
-var logger = services.GetRequiredService<ILogger<Program>>();
-
-try
+if (!app.Environment.IsDevelopment())
 {
-    var roles = new[] { "Admin", "Member", "özel misafir" };
+    using var scope = app.Services.CreateScope();
+    var services = scope.ServiceProvider;
+    var logger = services.GetRequiredService<ILogger<Program>>();
 
-    foreach (var role in roles)
+    var db = services.GetRequiredService<DataContext>();
+
+    // Tablolar zaten varsa migration'ı atla
+    var pendingMigrations = db.Database.GetPendingMigrations().ToList();
+    if (pendingMigrations.Any())
     {
-        if (!roleManager.RoleExistsAsync(role).Result)
+        try
         {
-            roleManager.CreateAsync(new IdentityRole(role)).Wait();
+            db.Database.Migrate();
+        }
+        catch (Exception migEx)
+        {
+            logger.LogWarning(migEx, "Migration failed, tables may already exist. Skipping...");
         }
     }
 
-    var users = db.Users.ToList();
-    if (users.Count == 1)
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = services.GetRequiredService<UserManager<User>>();
+
+    try
     {
-        var user = users.First();
-        if (!userManager.IsInRoleAsync(user, "Admin").Result)
+        var roles = new[] { "Admin", "Member", "özel misafir" };
+
+        foreach (var role in roles)
         {
-            userManager.AddToRoleAsync(user, "Admin").Wait();
+            if (!roleManager.RoleExistsAsync(role).Result)
+            {
+                roleManager.CreateAsync(new IdentityRole(role)).Wait();
+            }
+        }
+
+        var users = db.Users.ToList();
+        if (users.Count == 1)
+        {
+            var user = users.First();
+            if (!userManager.IsInRoleAsync(user, "Admin").Result)
+            {
+                userManager.AddToRoleAsync(user, "Admin").Wait();
+            }
         }
     }
-}
-catch (Exception ex)
-{
-    logger.LogError(ex, "Error during DB migration or role seeding");
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "Error during DB migration or role seeding");
+    }
 }
 
 // --------------------
@@ -130,5 +151,7 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapHub<ChatHub>("/chatHub");
 
 app.Run();
