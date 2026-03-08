@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SeyitnameWebSite.Data;
-using SeyitnameWebSite.Hubs;
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
@@ -57,11 +56,6 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 .AddDefaultTokenProviders();
 
 // --------------------
-// SIGNALR
-// --------------------
-builder.Services.AddSignalR();
-
-// --------------------
 // MVC
 // --------------------
 builder.Services.AddControllersWithViews();
@@ -83,10 +77,8 @@ if (!app.Environment.IsDevelopment())
     using var scope = app.Services.CreateScope();
     var services = scope.ServiceProvider;
     var logger = services.GetRequiredService<ILogger<Program>>();
-
     var db = services.GetRequiredService<DataContext>();
 
-    // Tablolar zaten varsa migration'ı atla
     var pendingMigrations = db.Database.GetPendingMigrations().ToList();
     if (pendingMigrations.Any())
     {
@@ -151,7 +143,5 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-
-app.MapHub<ChatHub>("/chatHub");
 
 app.Run();
