@@ -52,6 +52,9 @@ public class AccountController : Controller
 
             if (result.Succeeded)
             {
+                // Otomatik olarak "Member" rolü ata
+                await _userManager.AddToRoleAsync(user, "Member");
+
                 await _signInManager.SignInAsync(user, isPersistent: false);
                 return RedirectToAction("Index", "Home");
             }

@@ -1,0 +1,8 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^dotnet ef database update$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}

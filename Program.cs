@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SeyitnameWebSite.Data;
-using SeyitnameWebSite.Hubs;
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
@@ -58,11 +57,6 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 .AddDefaultTokenProviders();
 
 // --------------------
-// SIGNALR
-// --------------------
-builder.Services.AddSignalR();
-
-// --------------------
 // MVC
 // --------------------
 builder.Services.AddControllersWithViews();
@@ -79,44 +73,41 @@ var app = builder.Build();
 // --------------------
 // MIGRATION + SEED
 // --------------------
-if (!app.Environment.IsDevelopment())
+using var scope = app.Services.CreateScope();
+var services = scope.ServiceProvider;
+
+var db = services.GetRequiredService<DataContext>();
+db.Database.Migrate();
+
+var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+var userManager = services.GetRequiredService<UserManager<User>>();
+var logger = services.GetRequiredService<ILogger<Program>>();
+
+try
 {
-    using var scope = app.Services.CreateScope();
-    var services = scope.ServiceProvider;
+    var roles = new[] { "Admin", "Member", "özel misafir" };
 
-    var db = services.GetRequiredService<DataContext>();
-    db.Database.Migrate();
-
-    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-    var userManager = services.GetRequiredService<UserManager<User>>();
-    var logger = services.GetRequiredService<ILogger<Program>>();
-
-    try
+    foreach (var role in roles)
     {
-        var roles = new[] { "Admin", "Member" };
-
-        foreach (var role in roles)
+        if (!roleManager.RoleExistsAsync(role).Result)
         {
-            if (!roleManager.RoleExistsAsync(role).Result)
-            {
-                roleManager.CreateAsync(new IdentityRole(role)).Wait();
-            }
-        }
-
-        var users = db.Users.ToList();
-        if (users.Count == 1)
-        {
-            var user = users.First();
-            if (!userManager.IsInRoleAsync(user, "Admin").Result)
-            {
-                userManager.AddToRoleAsync(user, "Admin").Wait();
-            }
+            roleManager.CreateAsync(new IdentityRole(role)).Wait();
         }
     }
-    catch (Exception ex)
+
+    var users = db.Users.ToList();
+    if (users.Count == 1)
     {
-        logger.LogError(ex, "Error during DB migration or role seeding");
+        var user = users.First();
+        if (!userManager.IsInRoleAsync(user, "Admin").Result)
+        {
+            userManager.AddToRoleAsync(user, "Admin").Wait();
+        }
     }
+}
+catch (Exception ex)
+{
+    logger.LogError(ex, "Error during DB migration or role seeding");
 }
 
 // --------------------
@@ -139,7 +130,5 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-
-app.MapHub<ChatHub>("/chatHub");
 
 app.Run();

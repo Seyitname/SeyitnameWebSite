@@ -1,0 +1,295 @@
+@using SeyitnameWebSite.Data
+@model IEnumerable<Homework>
+
+@{
+    ViewData["Title"] = "Özel Misafir Alanı - Ders Programı & Ödevler";
+}
+
+<style>
+    tr{
+        color: black;
+    }
+    .homework-item {
+        transition: all 0.3s ease;
+        color: black;
+    }
+    .homework-item.completed {
+        opacity: 0.6;
+        text-decoration: line-through;
+    }
+    .due-soon {
+        border-left: 4px solid #ffc107;
+    }
+    .overdue {
+        border-left: 4px solid #dc3545;
+    }
+    .homework-item h5,
+    .homework-item p,
+    .homework-item small {
+        color: black !important;
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="text-center mb-4 gradient-text">📚 Ders Programı & Ödev Takibi</h1>
+        </div>
+    </div>
+
+    <!-- Ders Programı -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-12">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4 class="mb-0">📅 Haftalık Ders Programı</h4>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-bordered mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Gün Ders</th>
+                                    <th scope="col">8:35 <br /> 9:25</th>
+                                    <th scope="col">09:25 <br /> 10:15</th>
+                                    <th scope="col">10:15 <br /> 10:55</th>
+                                    <th scope="col">11:05 <br /> 11:45</th>
+                                    <th scope="col">11:55 <br /> 12:35</th>
+                                    <th scope="col">13:20 <br /> 14:00</th>
+                                    <th scope="col">14:10 <br /> 14:50</th>
+                                    <th scope="col">15:00 <br /> 15:40</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">Pazartesi</th>
+                                    <td>İngilizce</td>
+                                    <td>Edebiyat</td>
+                                    <td>Edebiyat</td>
+                                    <td>Edebiyat</td>
+                                    <td>Matematik</td>
+                                    <td>Matematik</td>
+                                    <td>Çoğrafya</td>
+                                    <td>Çoğrafya</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Salı</th>
+                                    <td>Osmanlıca</td>
+                                    <td>Osmanlıca</td>
+                                    <td>Edebiyat</td>
+                                    <td>Edebiyat</td>
+                                    <td>Müzik / Resim</td>
+                                    <td>Müzik / Resim</td>
+                                    <td>Din</td>
+                                    <td>Din</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Çarşamba</th>
+                                    <td>Fizik</td>
+                                    <td>Fizik</td>
+                                    <td>Matematik</td>
+                                    <td>Matematik</td>
+                                    <td>Rehberlik</td>
+                                    <td>Kimya</td>
+                                    <td>Kimya</td>
+                                    <td>İngilizce</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Perşembe</th>
+                                    <td>Edebiyat</td>
+                                    <td>Edebiyat</td>
+                                    <td>İngilizce</td>
+                                    <td>İngilizce</td>
+                                    <td>Tarih</td>
+                                    <td>Tarih</td>
+                                    <td>Sosyal Bilimler</td>
+                                    <td>Sosyal Bilimler</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Cuma</th>
+                                    <td>TAİLE</td>
+                                    <td>TRKDÜŞ</td>
+                                    <td>Biyoloji</td>
+                                    <td>Biyoloji</td>
+                                    <td>Matematik</td>
+                                    <td>Matematik</td>
+                                    <td>Felsefe</td>
+                                    <td>Felsefe</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ödev Listesi -->
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow-lg">
+                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">📝 Ödev Listesi</h4>
+                    <button class="btn btn-light btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#addHomeworkForm">
+                        ➕ Ödev Ekle
+                    </button>
+                </div>
+                <div class="card-body">
+                    <!-- Success/Error Messages -->
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            @TempData["Success"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            @TempData["Error"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    <!-- Add Homework Form -->
+                    <div class="collapse mb-4" id="addHomeworkForm">
+                        <div class="card card-body bg-light">
+                            <form asp-action="AddHomework" method="post">
+                                @Html.AntiForgeryToken()
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label class="homework-item" for="title" class="form-label">Ödev Başlığı *</label>
+                                        <input type="text" class="form-control" id="title" name="title" required maxlength="200">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="homework-item" for="subject" class="form-label">Ders</label>
+                                        <select class="form-control" id="subject" name="subject">
+                                            <option value="">Ders Seçin</option>
+                                            <option value="İngilizce">İngilizce</option>
+                                            <option value="Edebiyat">Edebiyat</option>
+                                            <option value="Matematik">Matematik</option>
+                                            <option value="Çoğrafya">Çoğrafya</option>
+                                            <option value="Osmanlıca">Osmanlıca</option>
+                                            <option value="Müzik">Müzik</option>
+                                            <option value="Resim">Resim</option>
+                                            <option value="Din">Din</option>
+                                            <option value="Fizik">Fizik</option>
+                                            <option value="Rehberlik">Rehberlik</option>
+                                            <option value="Kimya">Kimya</option>
+                                            <option value="Tarih">Tarih</option>
+                                            <option value="Sosyal Bilimler">Sosyal Bilimler</option>
+                                            <option value="TAİLE">TAİLE</option>
+                                            <option value="TRKDÜŞ">TRKDÜŞ</option>
+                                            <option value="Biyoloji">Biyoloji</option>
+                                            <option value="Felsefe">Felsefe</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="homework-item" for="dueDate" class="form-label">Teslim Tarihi</label>
+                                        <input type="datetime-local" class="form-control" id="dueDate" name="dueDate">
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <label class="homework-item" for="description" class="form-label">Açıklama</label>
+                                    <textarea class="form-control" id="description" name="description" rows="3" maxlength="500"></textarea>
+                                </div>
+                                <div class="mt-3">
+                                    <button type="submit" class="btn btn-success">Ödev Ekle</button>
+                                    <button type="button" class="btn btn-secondary ms-2" data-bs-toggle="collapse" data-bs-target="#addHomeworkForm">İptal</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Homework List -->
+                    @if (Model.Any())
+                    {
+                        <div class="list-group">
+                            @foreach (var homework in Model)
+                            {
+                                var cssClass = "";
+                                var statusText = "";
+                                var statusColor = "";
+
+                                if (homework.IsCompleted)
+                                {
+                                    cssClass = "completed";
+                                    statusText = "✓ Tamamlandı";
+                                    statusColor = "success";
+                                }
+                                else if (homework.DueDate.HasValue && homework.DueDate.Value < DateTime.Now)
+                                {
+                                    cssClass = "overdue";
+                                    statusText = "⚠️ Süresi Geçti";
+                                    statusColor = "danger";
+                                }
+                                else if (homework.DueDate.HasValue && homework.DueDate.Value < DateTime.Now.AddDays(1))
+                                {
+                                    cssClass = "due-soon";
+                                    statusText = "⏰ Yakında";
+                                    statusColor = "warning";
+                                }
+                                else
+                                {
+                                    statusText = "📅 Devam Ediyor";
+                                    statusColor = "primary";
+                                }
+
+                                <div class="list-group-item homework-item @cssClass">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div class="flex-grow-1">
+                                            <h5 class="mb-1">@homework.Title</h5>
+                                            @if (!string.IsNullOrEmpty(homework.Subject))
+                                            {
+                                                <span class="badge bg-info mb-2">@homework.Subject</span>
+                                            }
+                                            @if (!string.IsNullOrEmpty(homework.Description))
+                                            {
+                                                <p class="mb-2 text-muted">@homework.Description</p>
+                                            }
+                                            <small class="text-muted">
+                                                Oluşturulma: @homework.CreatedDate.ToString("dd.MM.yyyy HH:mm")
+                                                @if (homework.DueDate.HasValue)
+                                                {
+                                                    <span>• Teslim: @homework.DueDate.Value.ToString("dd.MM.yyyy HH:mm")</span>
+                                                }
+                                            </small>
+                                        </div>
+                                        <div class="d-flex flex-column align-items-end gap-2">
+                                            <span class="badge bg-@statusColor">@statusText</span>
+                                            <div class="btn-group btn-group-sm">
+                                                <form asp-action="ToggleHomework" method="post" style="display: inline;">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="id" value="@homework.Id" />
+                                                    <button type="submit" class="btn btn-outline-@(homework.IsCompleted ? "success" : "secondary")" title="@(homework.IsCompleted ? "Tamamlanmadı olarak işaretle" : "Tamamlandı olarak işaretle")">
+                                                        @(homework.IsCompleted ? "↩️" : "✓")
+                                                    </button>
+                                                </form>
+                                                <form asp-action="DeleteHomework" method="post" style="display: inline;" onsubmit="return confirm('Bu ödevi silmek istediğinizden emin misiniz?')">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="id" value="@homework.Id" />
+                                                    <button type="submit" class="btn btn-outline-danger" title="Ödevi Sil">
+                                                        🗑️
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">Henüz ödev eklenmemiş</h5>
+                            <p class="text-muted">İlk ödevinizi eklemek için yukarıdaki "Ödev Ekle" butonuna tıklayın.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

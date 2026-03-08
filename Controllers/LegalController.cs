@@ -15,5 +15,9 @@ namespace SeyitnameWebSite.Controllers
         {
             return View();
         }
+        public IActionResult NedenBoyleBirSiteVar()
+        {
+            return View();
+        }
     }
 }

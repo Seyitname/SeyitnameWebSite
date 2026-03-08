@@ -9,10 +9,8 @@ namespace SeyitnameWebSite.Data
         {
             var optionsBuilder = new DbContextOptionsBuilder<DataContext>();
 
-            // LOCAL için geçici connection string
-            optionsBuilder.UseNpgsql(
-                "Host=localhost;Database=seyitname;Username=postgres;Password=1234"
-            );
+            // LOCAL için SQLite
+            optionsBuilder.UseSqlite("Data Source = mydb.db");
 
             return new DataContext(optionsBuilder.Options);
         }

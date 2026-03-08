@@ -1,9 +1,18 @@
-<!-- AI tarafından yapıldı - Admin Link Partial View -->
 @inject Microsoft.AspNetCore.Identity.UserManager<SeyitnameWebSite.Data.User> UserManager
 
 @{
     var currentUser = await UserManager.GetUserAsync(User);
     var isAdmin = currentUser != null && await UserManager.IsInRoleAsync(currentUser, "Admin");
+    var isSpecialGuest = currentUser != null && await UserManager.IsInRoleAsync(currentUser, "özel misafir");
+}
+
+@if (User?.Identity?.IsAuthenticated == true && (isAdmin || isSpecialGuest))
+{
+    <li class="nav-item">
+        <a class="nav-link nav-link-custom" asp-controller="SpecialGuest" asp-action="Index" style="color: #ffd700;">
+            <i class="fas fa-star"></i> Özel Misafir
+        </a>
+    </li>
 }
 
 @if (User?.Identity?.IsAuthenticated == true && isAdmin)

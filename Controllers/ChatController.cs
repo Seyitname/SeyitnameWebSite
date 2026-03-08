@@ -14,18 +14,33 @@ public class ChatController : Controller
 {
     private readonly UserManager<User> _userManager;
     private readonly IHubContext<ChatHub> _chatHub;
+    private readonly DataContext _context;
 
-    public ChatController(UserManager<User> userManager, IHubContext<ChatHub> chatHub)
+    public ChatController(UserManager<User> userManager, IHubContext<ChatHub> chatHub, DataContext context)
     {
         _userManager = userManager;
         _chatHub = chatHub;
+        _context = context;
     }
 
     // Chat sayfası
     [HttpGet]
     public IActionResult Index()
     {
-        return View();
+        // Son 50 mesajı veritabanından yükle
+        var messages = _context.ChatMessages
+            .OrderByDescending(m => m.CreatedDate)
+            .Take(50)
+            .OrderBy(m => m.CreatedDate)
+            .ToList();
+
+        Console.WriteLine($"Loading {messages.Count} historical messages for chat");
+        foreach (var msg in messages)
+        {
+            Console.WriteLine($"Message: {msg.UserName}: {msg.Message}");
+        }
+
+        return View(messages);
     }
 
     // Admin: Kullanıcıyı sustur

@@ -20,12 +20,34 @@ html, body {
 /* Buttons should be visibly clickable and accessible */
 .btn, button, a.btn {
     cursor: pointer;
-    -webkit-tap-highlight-color: rgba(0,0,0,0.05);
+    -webkit-tap-highlight-color: rgba(10, 96, 188, 0.896);
 }
 
 .btn:focus, a.btn:focus {
-    outline: 3px solid rgba(102,126,234,0.16);
+    outline: 3px solid rgba(60, 0, 255, 0.841);
     outline-offset: 2px;
+}
+
+/* Custom button for chat - white background */
+.btn-custom {
+    background-color: #ffffff;
+    color: #000000;
+    border: none;
+    padding: 0.5rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-custom:hover {
+    background-color: #f0f0f0;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn-custom:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Inputs — keep default behavior and visible borders */
