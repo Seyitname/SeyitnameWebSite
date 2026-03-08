@@ -74,3 +74,47 @@ html, body {
 
 /* Do not disable pointer events on anything */
 * { pointer-events: auto; }
+
+/* Navbar Styles for Mobile Compatibility */
+.navbar-custom {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.nav-link-custom {
+    color: rgba(255,255,255,0.9) !important;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.nav-link-custom:hover {
+    color: #ffffff !important;
+}
+
+.navbar-toggler {
+    border: none;
+    background: rgba(255,255,255,0.1);
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.9)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='m4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* Mobile navbar collapse */
+@media (max-width: 991.98px) {
+    .navbar-collapse {
+        background: rgba(0,0,0,0.9);
+        border-radius: 8px;
+        margin-top: 1rem;
+        padding: 1rem;
+    }
+
+    .navbar-nav {
+        text-align: center;
+    }
+
+    .nav-item {
+        margin-bottom: 0.5rem;
+    }
+}
