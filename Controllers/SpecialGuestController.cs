@@ -40,6 +40,11 @@ namespace SeyitnameWebSite.Controllers
             }
 
             var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null)
+            {
+                return Unauthorized("Kullanıcı bulunamadı!");
+            }
+
             var homeworks = await _context.Homeworks
                 .Where(h => h.UserId == currentUser.Id)
                 .OrderByDescending(h => h.CreatedDate)
@@ -64,6 +69,11 @@ namespace SeyitnameWebSite.Controllers
             }
 
             var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null)
+            {
+                return Unauthorized("Kullanıcı bulunamadı!");
+            }
+
             var homework = new Homework
             {
                 Title = title.Trim(),
@@ -89,7 +99,10 @@ namespace SeyitnameWebSite.Controllers
                 return Unauthorized("Bu işlemi yapamazsınız!");
             }
 
-            var currentUser = await _userManager.GetUserAsync(User);
+            var currentUser = await _userManager.GetUserAsync(User);            if (currentUser == null)
+            {
+                return Unauthorized("Kullanıcı bulunamadı!");
+            }
             var homework = await _context.Homeworks
                 .FirstOrDefaultAsync(h => h.Id == id && h.UserId == currentUser.Id);
 
@@ -114,6 +127,11 @@ namespace SeyitnameWebSite.Controllers
             }
 
             var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null)
+            {
+                return Unauthorized("Kullanıcı bulunamadı!");
+            }
+
             var homework = await _context.Homeworks
                 .FirstOrDefaultAsync(h => h.Id == id && h.UserId == currentUser.Id);
 

@@ -9,7 +9,7 @@
 @if (User?.Identity?.IsAuthenticated == true && (isAdmin || isSpecialGuest))
 {
     <li class="nav-item">
-        <a class="nav-link nav-link-custom" asp-controller="SpecialGuest" asp-action="Index" style="color: #ffd700;">
+        <a class="nav-link" asp-controller="SpecialGuest" asp-action="Index" style="color: #ffd700;">
             <i class="fas fa-star"></i> Özel Misafir
         </a>
     </li>
@@ -18,7 +18,7 @@
 @if (User?.Identity?.IsAuthenticated == true && isAdmin)
 {
     <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle nav-link-custom" href="#" role="button" data-bs-toggle="dropdown" style="color: #f093fb;">⚙️ Admin</a>
+        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" style="color: #f093fb;">⚙️ Admin</a>
         <ul class="dropdown-menu dropdown-menu-dark">
             <li><a class="dropdown-item" asp-controller="Admin" asp-action="Users">Üyeler</a></li>
             <li><a class="dropdown-item" asp-controller="Admin" asp-action="Roles">Roller</a></li>
