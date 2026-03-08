@@ -1,6 +1,6 @@
 **Merhaba,
 
-_Bu sayfa resmi olarak değil tamamen eğlence amaçlı kurulmuştur_. Bu sayfada ben kendi yazılım becerilerimi geliştirmek amaçlı yazdım( Sadece temelini attım). Sonra aklıma gelen fikirlerle kendim yapamayacağım bazı şeyleri(%99'unu sadece) Copilot'a yaptırdım aşağıdaki yazıların hepsinide AI(Copilot) hazırladı. Eğer diğer kodları incelerseniz bazı bölümlerde "AI tarafından yapıldı" gibi cümleler görebilirsiniz. Yapay zekadan çoğunlukla Frontend (CSS & JavaScript) bölümünden yardım aldım. Sonra bu siteye kayıt olma özelliği ekleme fikrim vardı. Bunu Copilot'a aktardığımda hızlıca yaptı. Bazı bölümlerde Geminiden de yardım almak zorunda kaldım çünkü ücretsiz kullanım süresi bitmişti. Ekstradan Claude AI'ında emeği dokundu Sonuç bunlar uygun bir ücretsiz server bulursam açarım bakarsınız merak ederseniz.
+_Bu sayfa resmi olarak değil tamamen eğlence amaçlı kurulmuştur_. Bu sayfada ben kendi yazılım becerilerimi geliştirmek amaçlı yazdım( Sadece temelini attım). Sonra aklıma gelen fikirlerle kendim yapamayacağım bazı şeyleri(%99'unu sadece) Copilot'a yaptırdım aşağıdaki yazıların hepsinide AI(Copilot) hazırladı. Eğer diğer kodları incelerseniz bazı bölümlerde "AI tarafından yapıldı" gibi cümleler görebilirsiniz. Yapay zekadan çoğunlukla Frontend (CSS & JavaScript) bölümünden yardım aldım. Sonra bu siteye kayıt olma özelliği ekleme fikrim vardı. Bunu Copilot'a aktardığımda hızlıca yaptı. Bazı bölümlerde Geminiden de yardım almak zorunda kaldım çünkü ücretsiz kullanım süresi bitmişti. Ekstradan Claude AI'ında emeği dokundu Sonuç bunlar.
 **
 ---
 
