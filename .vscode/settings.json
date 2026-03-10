@@ -3,6 +3,7 @@
         "/^dotnet ef database update$/": {
             "approve": true,
             "matchCommandLine": true
-        }
+        },
+        "dotnet ef": true
     }
 }
