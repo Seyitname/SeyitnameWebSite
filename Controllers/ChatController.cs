@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SeyitnameWebSite.Data;
+using SeyitnameWebSite.Models;
 
 namespace SeyitnameWebSite.Controllers
 {
@@ -38,7 +39,7 @@ namespace SeyitnameWebSite.Controllers
             // Tüm kullanıcıları al (bot hariç)
             var users = await _context.Users
                 .Where(u => u.Id != currentUser.Id)
-                .OrderBy(u => u.FullName)
+                .OrderBy(u => u.FullName ?? u.UserName)
                 .ToListAsync();
 
             // Kullanıcılara rollerini ekle
@@ -91,6 +92,8 @@ namespace SeyitnameWebSite.Controllers
                 return BadRequest("Mesaj boş veya çok uzun");
 
             var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null)
+                return Unauthorized();
 
             var message = new Message
             {
@@ -122,6 +125,9 @@ namespace SeyitnameWebSite.Controllers
         public async Task<IActionResult> DeleteMessage(int id)
         {
             var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null)
+                return Unauthorized();
+
             var message = await _context.Messages.FindAsync(id);
 
             if (message == null)
@@ -135,10 +141,5 @@ namespace SeyitnameWebSite.Controllers
 
             return Ok();
         }
-    }
-
-    public class SendMessageRequest
-    {
-        public string Content { get; set; }
     }
 }

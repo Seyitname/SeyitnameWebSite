@@ -9,14 +9,14 @@ namespace SeyitnameWebSite.Data
         public int Id { get; set; }
 
         [Required]
-        public string UserId { get; set; }
+        public string UserId { get; set; } = string.Empty;
 
         [ForeignKey(nameof(UserId))]
-        public virtual User User { get; set; }
+        public virtual User User { get; set; } = null!;
 
         [Required]
         [StringLength(5000)]
-        public string Content { get; set; }
+        public string Content { get; set; } = string.Empty;
 
         [Required]
         public DateTime CreatedDate { get; set; } = DateTime.Now;

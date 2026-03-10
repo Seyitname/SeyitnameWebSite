@@ -175,8 +175,8 @@ namespace SeyitnameWebSite.Controllers
             var model = new ManageUserRolesViewModel
             {
                 UserId = user.Id,
-                UserName = user.UserName,
-                Roles = allRoles.Select(r => new RoleSelection { RoleName = r, Selected = userRoles.Contains(r) }).ToList()
+                UserName = user.UserName ?? "",
+                Roles = allRoles.Select(r => new RoleSelection { RoleName = r, Selected = userRoles?.Contains(r) ?? false }).ToList()
             };
 
             return View(model);

@@ -31,9 +31,9 @@ public class UserController : Controller
         {
             // Kullanıcı adı veya tam isimde arama
             usersQuery = usersQuery.Where(u =>
-                u.UserName.Contains(searchTerm) ||
-                u.FullName.Contains(searchTerm) ||
-                (u.UserName + u.Tag).Contains(searchTerm));
+                (u.UserName ?? "").Contains(searchTerm) ||
+                (u.FullName ?? "").Contains(searchTerm) ||
+                ((u.UserName ?? "") + (u.Tag ?? "")).Contains(searchTerm));
         }
 
         var users = await usersQuery
