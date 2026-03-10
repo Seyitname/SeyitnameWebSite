@@ -72,33 +72,22 @@ var app = builder.Build();
 // --------------------
 // MIGRATION + SEED
 // --------------------
-if (!app.Environment.IsDevelopment())
 {
     using var scope = app.Services.CreateScope();
     var services = scope.ServiceProvider;
     var logger = services.GetRequiredService<ILogger<Program>>();
     var db = services.GetRequiredService<DataContext>();
 
-    var pendingMigrations = db.Database.GetPendingMigrations().ToList();
-    if (pendingMigrations.Any())
-    {
-        try
-        {
-            db.Database.Migrate();
-        }
-        catch (Exception migEx)
-        {
-            logger.LogWarning(migEx, "Migration failed, tables may already exist. Skipping...");
-        }
-    }
-
-    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-    var userManager = services.GetRequiredService<UserManager<User>>();
-
     try
     {
-        var roles = new[] { "Admin", "Member", "özel misafir" };
+        logger.LogInformation("Applying pending migrations...");
+        db.Database.Migrate();
+        logger.LogInformation("Migrations applied successfully");
 
+        var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+        var userManager = services.GetRequiredService<UserManager<User>>();
+
+        var roles = new[] { "Admin", "Member", "özel misafir" };
         foreach (var role in roles)
         {
             if (!roleManager.RoleExistsAsync(role).Result)
@@ -116,10 +105,13 @@ if (!app.Environment.IsDevelopment())
                 userManager.AddToRoleAsync(user, "Admin").Wait();
             }
         }
+
+        logger.LogInformation("Database seeding completed");
     }
     catch (Exception ex)
     {
-        logger.LogError(ex, "Error during DB migration or role seeding");
+        logger.LogError(ex, "Error during migration or seeding");
+        throw;
     }
 }
 
