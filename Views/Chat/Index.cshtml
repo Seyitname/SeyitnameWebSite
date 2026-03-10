@@ -278,7 +278,6 @@
                 var roles = user.Roles ?? new List<string>();
                 var role = roles.FirstOrDefault() ?? "User";
                 <div class="user-item">
-                    <img src="@user.ProfileImage" alt="@user.FullName" class="user-avatar" onerror="this.src='/img/default-avatar.png'">
                     <div class="user-info">
                         <div class="user-name">@(user.FullName ?? user.UserName)</div>
                         <div class="user-role">
@@ -305,7 +304,6 @@
 <script>
     let currentUserId = '@currentUser.Id';
     let currentUserName = '@(currentUser.FullName ?? currentUser.UserName)';
-    let currentUserImage = '@currentUser.ProfileImage';
 
     // Sayfa yüklenince mesajları al
     document.addEventListener('DOMContentLoaded', function () {
