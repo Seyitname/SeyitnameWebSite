@@ -12,6 +12,7 @@ namespace SeyitnameWebSite.Data
         public DbSet<Baglanti> Baglantilar => Set<Baglanti>();
         public DbSet<IletisimBilgileri> IBilgiler => Set<IletisimBilgileri>();
         public DbSet<Homework> Homeworks => Set<Homework>();
+        public DbSet<Message> Messages => Set<Message>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

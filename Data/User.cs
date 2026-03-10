@@ -13,10 +13,16 @@ public class User : IdentityUser
 
     public string? Bio { get; set; }
 
+    // Profil resmi
+    public string? ProfileImage { get; set; }
+
     // Kullanıcı adı yanına eklenecek tag (örneğin [001])
     public string Tag { get; set; } = string.Empty;
 
     // Chat için mute/ban durumları
     public bool IsMuted { get; set; } = false;
     public bool IsBanned { get; set; } = false;
+
+    // Roles (navigation property - view'de kullanmak için)
+    public virtual ICollection<string> Roles { get; set; } = new List<string>();
 }
