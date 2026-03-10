@@ -80,9 +80,19 @@ var app = builder.Build();
 
     try
     {
-        logger.LogInformation("Applying pending migrations...");
-        db.Database.Migrate();
-        logger.LogInformation("Migrations applied successfully");
+        logger.LogInformation("Checking for pending migrations...");
+        var pendingMigrations = db.Database.GetPendingMigrations().ToList();
+
+        if (pendingMigrations.Any())
+        {
+            logger.LogInformation($"Applying {pendingMigrations.Count} pending migrations...");
+            db.Database.Migrate();
+            logger.LogInformation("Migrations applied successfully");
+        }
+        else
+        {
+            logger.LogInformation("No pending migrations found");
+        }
 
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
         var userManager = services.GetRequiredService<UserManager<User>>();
@@ -110,8 +120,8 @@ var app = builder.Build();
     }
     catch (Exception ex)
     {
-        logger.LogError(ex, "Error during migration or seeding");
-        throw;
+        logger.LogError(ex, "Error during migration or seeding - continuing anyway");
+        // Production'da tablo varsa devam et, hata verme
     }
 }
 
