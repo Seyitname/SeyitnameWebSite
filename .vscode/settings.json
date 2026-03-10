@@ -4,6 +4,11 @@
             "approve": true,
             "matchCommandLine": true
         },
-        "dotnet ef": true
+        "dotnet ef": true,
+        "git add": true,
+        "/^git push$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
     }
 }

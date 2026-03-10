@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SeyitnameWebSite.Data;
 
@@ -23,6 +24,7 @@ public class User : IdentityUser
     public bool IsMuted { get; set; } = false;
     public bool IsBanned { get; set; } = false;
 
-    // Roles (navigation property - view'de kullanmak için)
+    // Roles (runtime'da kullanmak için, veritabanına kaydedilmez)
+    [NotMapped]
     public virtual ICollection<string> Roles { get; set; } = new List<string>();
 }
