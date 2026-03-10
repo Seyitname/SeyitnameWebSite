@@ -19,6 +19,8 @@ namespace SeyitnameWebSite.Controllers
             _userManager = userManager;
         }
 
+        
+
         // Sohbet sayfasını görüntüle
         public async Task<IActionResult> Index()
         {
@@ -70,7 +72,6 @@ namespace SeyitnameWebSite.Controllers
                     m.CreatedDate,
                     UserId = m.User.Id,
                     UserName = m.User.FullName ?? m.User.UserName,
-                    UserImage = m.User.ProfileImage,
                     UserRole = _context.UserRoles
                         .Where(ur => ur.UserId == m.User.Id)
                         .Join(_context.Roles,
@@ -115,7 +116,6 @@ namespace SeyitnameWebSite.Controllers
                 message.CreatedDate,
                 UserId = currentUser.Id,
                 UserName = currentUser.FullName ?? currentUser.UserName,
-                UserImage = currentUser.ProfileImage,
                 UserRole = userRole
             });
         }

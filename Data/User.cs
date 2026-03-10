@@ -14,9 +14,6 @@ public class User : IdentityUser
 
     public string? Bio { get; set; }
 
-    // Profil resmi
-    public string? ProfileImage { get; set; }
-
     // Kullanıcı adı yanına eklenecek tag (örneğin [001])
     public string Tag { get; set; } = string.Empty;
 
