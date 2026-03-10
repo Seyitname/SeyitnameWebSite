@@ -15,12 +15,10 @@ builder.Services.AddDbContext<DataContext>(options =>
 {
     if (builder.Environment.IsDevelopment())
     {
-        // LOCAL → SQLite
         options.UseSqlite(connectionString);
     }
     else
     {
-        // PRODUCTION → PostgreSQL (Render)
         var pgRaw = Environment.GetEnvironmentVariable("DATABASE_INTERNAL_URL");
 
         if (string.IsNullOrEmpty(pgRaw))
@@ -48,7 +46,6 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
     options.Password.RequireLowercase = false;
     options.Password.RequireUppercase = false;
     options.Password.RequireNonAlphanumeric = false;
-
     options.SignIn.RequireConfirmedEmail = false;
     options.SignIn.RequireConfirmedPhoneNumber = false;
 })
@@ -72,6 +69,7 @@ var app = builder.Build();
 // --------------------
 // MIGRATION + SEED
 // --------------------
+if (!app.Environment.IsDevelopment())
 {
     using var scope = app.Services.CreateScope();
     var services = scope.ServiceProvider;
@@ -80,20 +78,16 @@ var app = builder.Build();
 
     try
     {
-        logger.LogInformation("Checking for pending migrations...");
-        var pendingMigrations = db.Database.GetPendingMigrations().ToList();
+        db.Database.Migrate();
+        logger.LogInformation("Migrations applied successfully.");
+    }
+    catch (Exception migEx)
+    {
+        logger.LogWarning(migEx, "Migration error, continuing...");
+    }
 
-        if (pendingMigrations.Any())
-        {
-            logger.LogInformation($"Applying {pendingMigrations.Count} pending migrations...");
-            db.Database.Migrate();
-            logger.LogInformation("Migrations applied successfully");
-        }
-        else
-        {
-            logger.LogInformation("No pending migrations found");
-        }
-
+    try
+    {
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
         var userManager = services.GetRequiredService<UserManager<User>>();
 
@@ -101,9 +95,7 @@ var app = builder.Build();
         foreach (var role in roles)
         {
             if (!roleManager.RoleExistsAsync(role).Result)
-            {
                 roleManager.CreateAsync(new IdentityRole(role)).Wait();
-            }
         }
 
         var users = db.Users.ToList();
@@ -111,17 +103,12 @@ var app = builder.Build();
         {
             var user = users.First();
             if (!userManager.IsInRoleAsync(user, "Admin").Result)
-            {
                 userManager.AddToRoleAsync(user, "Admin").Wait();
-            }
         }
-
-        logger.LogInformation("Database seeding completed");
     }
     catch (Exception ex)
     {
-        logger.LogError(ex, "Error during migration or seeding - continuing anyway");
-        // Production'da tablo varsa devam et, hata verme
+        logger.LogError(ex, "Error during role seeding.");
     }
 }
 
