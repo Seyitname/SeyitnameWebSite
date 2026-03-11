@@ -83,6 +83,31 @@ if (!app.Environment.IsDevelopment())
         var pending = all.Except(applied).ToList();
 
         logger.LogInformation($"Applied: {applied.Count}, Pending: {pending.Count}");
+
+        foreach (var migration in pending)
+        {
+            try
+            {
+                if (migration.Contains("InitialCreate"))
+                {
+                    logger.LogInformation($"Skipping {migration}, marking as applied...");
+                    db.Database.ExecuteSqlRaw(
+                        $"INSERT INTO \"__EFMigrationsHistory\" (\"MigrationId\", \"ProductVersion\") VALUES ('{migration}', '8.0.0')"
+                    );
+                }
+                else
+                {
+                    logger.LogInformation($"Applying: {migration}");
+                    db.Database.Migrate();
+                    logger.LogInformation("All pending migrations applied.");
+                    break;
+                }
+            }
+            catch (Exception mex)
+            {
+                logger.LogWarning(mex, $"Failed: {migration}, skipping...");
+            }
+        }
     }
     catch (Exception ex)
     {
