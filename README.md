@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 ﻿# Seyitname - Kişisel Portföy ve Yönetim Sistemi
+=======
+# Seyitname - Kişisel Portföy ve Yönetim Sistemi
+>>>>>>> 586397b4f0967cf0ce221135aaf935e4bbb82b38
 
 Bu proje, **ASP.NET Core 8.0 MVC** ve **Entity Framework Core** kullanılarak geliştirilmiş, katmanlı mimariye (N-Layer Architecture) sahip kişisel bir web portföy projesidir.
 
