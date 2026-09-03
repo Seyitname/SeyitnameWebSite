@@ -1,5 +1,4 @@
-<!-- AI tarafından yapıldı - Edit Profile Page -->
-@model SeyitnameWebSite.Controllers.EditProfileModel
+﻿@model SeyitnameWebSite.Controllers.EditProfileModel
 @{
     ViewData["Title"] = "Profili Düzenle - Seyitname";
 }
@@ -9,7 +8,7 @@
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <div class="text-center mb-5">
-                    <h1 class="hero-title mb-2">✏️ Profili Düzenle</h1>
+                    <h1 class="hero-title mb-2">Profili Düzenle</h1>
                     <p class="hero-subtitle">Bilgilerinizi Güncelleyin</p>
                 </div>
 
@@ -17,19 +16,19 @@
                     <form method="post" action="/Profile/Edit">
                         @Html.AntiForgeryToken()
                         <div class="mb-3">
-                            <label asp-for="FullName" class="form-label text-light">👤 Ad-Soyad</label>
+                            <label asp-for="FullName" class="form-label text-light">Ad-Soyad</label>
                             <input asp-for="FullName" type="text" class="form-control-custom" placeholder="Adınız ve Soyadınız" />
                             <span asp-validation-for="FullName" class="text-danger small"></span>
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="Email" class="form-label text-light">📧 E-posta</label>
+                            <label asp-for="Email" class="form-label text-light">E-posta</label>
                             <input asp-for="Email" type="email" class="form-control-custom" placeholder="E-posta adresiniz" readonly />
                             <small class="text-muted">E-posta adresi değiştirilemez</small>
                         </div>
 
                         <div class="mb-4">
-                            <label asp-for="Bio" class="form-label text-light">📝 Biyografi (Opsiyonel)</label>
+                            <label asp-for="Bio" class="form-label text-light">Biyografi (Opsiyonel)</label>
                             <textarea asp-for="Bio" class="form-control-custom" rows="5" placeholder="Kendiniz hakkında kısaca bahsedin..."></textarea>
                             <small class="text-muted">En fazla 500 karakter</small>
                             <span asp-validation-for="Bio" class="text-danger small"></span>
@@ -37,10 +36,10 @@
 
                         <div class="d-flex gap-2">
                             <button type="submit" class="btn btn-custom flex-grow-1">
-                                💾 Kaydet
+                                Kaydet
                             </button>
                             <a href="/Profile" class="btn btn-outline-secondary flex-grow-1">
-                                ← Geri Dön
+                                Geri Dön
                             </a>
                         </div>
                     </form>
@@ -49,7 +48,7 @@
                 @if (!ViewData.ModelState.IsValid)
                 {
                     <div class="alert alert-danger mt-3" role="alert">
-                        ⚠️ Lütfen hataları düzeltin ve tekrar deneyin.
+                        Lütfen hataları düzeltin ve tekrar deneyin.
                     </div>
                 }
             </div>
@@ -62,3 +61,4 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
+

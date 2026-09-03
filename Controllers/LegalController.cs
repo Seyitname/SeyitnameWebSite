@@ -1,6 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
-
-// AI tarafından yapıldı - Legal Pages Controller
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace SeyitnameWebSite.Controllers
 {
@@ -21,3 +19,4 @@ namespace SeyitnameWebSite.Controllers
         }
     }
 }
+

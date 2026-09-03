@@ -1,12 +1,10 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SeyitnameWebSite.Data;
 using System.ComponentModel.DataAnnotations;
 
 namespace SeyitnameWebSite.Controllers;
-
-// AI tarafından yapıldı - User Profile Controller
 [Authorize]
 public class ProfileController : Controller
 {
@@ -87,7 +85,7 @@ public class ProfileController : Controller
         // Şifreyi kontrol et
         var result = await _userManager.CheckPasswordAsync(user, model.Password);
         if (!result)
-            return Json(new { success = false, message = "❌ Şifre yanlış! Hesap silinmedi." });
+            return Json(new { success = false, message = "✕ Şifre yanlış! Hesap silinmedi." });
 
         // Hesabı sil
         var deleteResult = await _userManager.DeleteAsync(user);
@@ -95,7 +93,7 @@ public class ProfileController : Controller
         {
             // Oturumu kapat
             await _signInManager.SignOutAsync();
-            return Json(new { success = true, message = "Hesab başarıyla silindi!" });
+            return Json(new { success = true, message = "Hesap başarıyla silindi!" });
         }
 
         return Json(new { success = false, message = "Silme işlemi başarısız!" });
@@ -153,7 +151,7 @@ public class ProfileController : Controller
         var result = await _userManager.CheckPasswordAsync(user, password);
         if (!result)
         {
-            ModelState.AddModelError(string.Empty, "❌ Şifre yanlış!");
+            ModelState.AddModelError(string.Empty, "✕ Şifre yanlış!");
             return View("ConfirmDeleteAccount");
         }
 
@@ -169,8 +167,6 @@ public class ProfileController : Controller
         return View("ConfirmDeleteAccount");
     }
 }
-
-// AI tarafından yapıldı - Edit Profile Model
 public class EditProfileModel
 {
     public string? UserName { get; set; }
@@ -185,8 +181,6 @@ public class EditProfileModel
     [System.ComponentModel.DataAnnotations.StringLength(500)]
     public string? Bio { get; set; }
 }
-
-// AI tarafından yapıldı - Change Password Model
 public class ChangePasswordModel
 {
     [System.ComponentModel.DataAnnotations.Required(ErrorMessage = "Mevcut şifre zorunludur")]
@@ -203,9 +197,8 @@ public class ChangePasswordModel
     [DataType(DataType.Password)]
     public string ConfirmNewPassword { get; set; } = string.Empty;
 }
-
-// AI tarafından yapıldı - Delete Account Model
 public class DeleteAccountModel
 {
     public string Password { get; set; } = string.Empty;
 }
+

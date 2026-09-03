@@ -1,5 +1,4 @@
-<!-- AI tarafından yapıldı - Modern iletişim formu -->
-@model IletisimBilgileri
+﻿@model IletisimBilgileri
 
 @{
     ViewData["Title"] = "İletişim - Seyitname";
@@ -9,7 +8,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="text-center mb-5 portfolio-item">
-                <h1 class="hero-title mb-3">💬 İletişim Formu</h1>
+                <h1 class="hero-title mb-3">İletişim Formu</h1>
                 <p class="hero-subtitle">Görüşleriniz Çok Önemli!</p>
             </div>
 
@@ -23,19 +22,19 @@
                     </div>
 
                     <div class="form-group mb-4">
-                        <label asp-for="Ad" class="form-label gradient-text mb-2">👤 İsim *</label>
+                        <label asp-for="Ad" class="form-label gradient-text mb-2">İsim *</label>
                         <input asp-for="Ad" class="form-control-custom form-control" placeholder="Adınız ve Soyadınız" required>
                         <span asp-validation-for="Ad" class="text-danger small d-block mt-1"></span>
                     </div>
 
                     <div class="form-group mb-4">
-                        <label asp-for="Email" class="form-label gradient-text mb-2">📧 E-Posta *</label>
+                        <label asp-for="Email" class="form-label gradient-text mb-2">E-Posta *</label>
                         <input asp-for="Email" type="email" class="form-control-custom form-control" placeholder="E-posta Adresi (geri dönüş için)" required>
                         <span asp-validation-for="Email" class="text-danger small d-block mt-1"></span>
                     </div>
 
                     <div class="form-group mb-4">
-                        <label asp-for="Mesaj" class="form-label gradient-text mb-2">💭 Mesajınız *</label>
+                        <label asp-for="Mesaj" class="form-label gradient-text mb-2">Mesajınız *</label>
                         <textarea asp-for="Mesaj" class="form-control-custom form-control" rows="5" placeholder="Düşüncelerinizi, önerilerinizi veya eleştirilerinizi yazın..." required style="resize: none;"></textarea>
                         <span asp-validation-for="Mesaj" class="text-danger small d-block mt-1"></span>
                     </div>
@@ -50,10 +49,10 @@
 
                     <div class="d-flex gap-3">
                         <button type="submit" class="btn btn-custom btn-lg flex-grow-1">
-                            ✉️ Gönder
+                            Gönder
                         </button>
                         <a href="/" class="btn btn-outline-primary btn-lg flex-grow-1">
-                            ← Geri Dön
+                            Geri Dön
                         </a>
                     </div>
                 </form>

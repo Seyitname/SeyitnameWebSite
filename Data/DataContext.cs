@@ -1,8 +1,7 @@
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 namespace SeyitnameWebSite.Data
 {
-    // AI tarafından yapıldı - Identity entegrasyonu
     public class DataContext : IdentityDbContext<User>
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options)
@@ -11,18 +10,16 @@ namespace SeyitnameWebSite.Data
         }
         public DbSet<Baglanti> Baglantilar => Set<Baglanti>();
         public DbSet<IletisimBilgileri> IBilgiler => Set<IletisimBilgileri>();
-        public DbSet<Homework> Homeworks => Set<Homework>();
-        public DbSet<Message> Messages => Set<Message>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Baglanti>().HasData(
-                new Baglanti { Id = 1, Name = "YouTube", Picture = "YouTube.png", Description = "YouTube kanalımdır ve aktif değildir.", Link = "https://www.youtube.com/@seyitname" },
+                new Baglanti { Id = 1, Name = "YouTube", Picture = "YouTube.png", Description = "YouTube kanalımda ve aktif değil.", Link = "https://www.youtube.com/@seyitname" },
                 new Baglanti { Id = 2, Name = "Chesscom", Picture = "Chesscom.png", Description = "Satrançta kendimi geliştirmeye çalışıyorum.", Link = "https://www.chess.com/member/seyitnames" },
                 new Baglanti { Id = 3, Name = "Chesscom Kulüp", Picture = "Chesscomkulup.png", Description = "Kulübe istek atan herkesi alabiliriz.", Link = "https://www.chess.com/club/chessname-1/join/757085" },
-                new Baglanti { Id = 4, Name = "GitHub", Picture = "GitHub.png", Description = "Bazen yazdığım kodları paylaşırım.", Link = "https://github.com/seyitname" },
+                new Baglanti { Id = 4, Name = "GitHub", Picture = "GitHub.png", Description = "Bazen yazdığım kodları paylaşıyorum.", Link = "https://github.com/seyitname" },
                 new Baglanti { Id = 5, Name = "Instagram", Picture = "İnstagram.jpeg", Description = "Genelde paylaşım yapmam.", Link = "https://www.instagram.com/seyitname26" },
                 new Baglanti { Id = 6, Name = "Kick", Picture = "Kick.png", Description = "Yayın açmam ama takip ederseniz sevinirim.", Link = "https://www.kick.com/seyitname" },
                 new Baglanti { Id = 7, Name = "Laby", Picture = "laby.png", Description = "Minecraft karakterim.", Link = "https://laby.net/@seyitname" },
@@ -36,6 +33,5 @@ namespace SeyitnameWebSite.Data
         }
 
     }
-
 
 }

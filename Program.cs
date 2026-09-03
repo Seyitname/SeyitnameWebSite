@@ -66,77 +66,84 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 var app = builder.Build();
 
-// --------------------
-// MIGRATION + SEED
-// --------------------
-if (!app.Environment.IsDevelopment())
+using (var scope = app.Services.CreateScope())
 {
-    using var scope = app.Services.CreateScope();
     var services = scope.ServiceProvider;
     var logger = services.GetRequiredService<ILogger<Program>>();
     var db = services.GetRequiredService<DataContext>();
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = services.GetRequiredService<UserManager<User>>();
 
     try
     {
-        var applied = db.Database.GetAppliedMigrations().ToList();
-        var all = db.Database.GetMigrations().ToList();
-        var pending = all.Except(applied).ToList();
-
-        logger.LogInformation($"Applied: {applied.Count}, Pending: {pending.Count}");
-
-        foreach (var migration in pending)
-        {
-            try
-            {
-                if (migration.Contains("InitialCreate"))
-                {
-                    logger.LogInformation($"Skipping {migration}, marking as applied...");
-                    db.Database.ExecuteSqlRaw(
-                        $"INSERT INTO \"__EFMigrationsHistory\" (\"MigrationId\", \"ProductVersion\") VALUES ('{migration}', '8.0.0')"
-                    );
-                }
-                else
-                {
-                    logger.LogInformation($"Applying: {migration}");
-                    db.Database.Migrate();
-                    logger.LogInformation("All pending migrations applied.");
-                    break;
-                }
-            }
-            catch (Exception mex)
-            {
-                logger.LogWarning(mex, $"Failed: {migration}, skipping...");
-            }
-        }
-    }
-    catch (Exception ex)
-    {
-        logger.LogError(ex, "Migration check failed.");
-    }
-
-    try
-    {
-        var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-        var userManager = services.GetRequiredService<UserManager<User>>();
-
         var roles = new[] { "Admin", "Member", "özel misafir" };
         foreach (var role in roles)
         {
             if (!roleManager.RoleExistsAsync(role).Result)
+            {
                 roleManager.CreateAsync(new IdentityRole(role)).Wait();
-        }
-
-        var users = db.Users.ToList();
-        if (users.Count == 1)
-        {
-            var user = users.First();
-            if (!userManager.IsInRoleAsync(user, "Admin").Result)
-                userManager.AddToRoleAsync(user, "Admin").Wait();
+            }
         }
     }
     catch (Exception ex)
     {
         logger.LogError(ex, "Error during role seeding.");
+    }
+
+    if (!app.Environment.IsDevelopment())
+    {
+        try
+        {
+            var applied = db.Database.GetAppliedMigrations().ToList();
+            var all = db.Database.GetMigrations().ToList();
+            var pending = all.Except(applied).ToList();
+
+            logger.LogInformation($"Applied: {applied.Count}, Pending: {pending.Count}");
+
+            foreach (var migration in pending)
+            {
+                try
+                {
+                    if (migration.Contains("InitialCreate"))
+                    {
+                        logger.LogInformation($"Skipping {migration}, marking as applied...");
+                        db.Database.ExecuteSqlRaw(
+                            $"INSERT INTO \"__EFMigrationsHistory\" (\"MigrationId\", \"ProductVersion\") VALUES ('{migration}', '8.0.0')"
+                        );
+                    }
+                    else
+                    {
+                        logger.LogInformation($"Applying: {migration}");
+                        db.Database.Migrate();
+                        logger.LogInformation("All pending migrations applied.");
+                        break;
+                    }
+                }
+                catch (Exception mex)
+                {
+                    logger.LogWarning(mex, $"Failed: {migration}, skipping...");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Migration check failed.");
+        }
+
+        try
+        {
+            var users = db.Users.ToList();
+            if (users.Count == 1)
+            {
+                var user = users.First();
+                if (!userManager.IsInRoleAsync(user, "Admin").Result)
+                    userManager.AddToRoleAsync(user, "Admin").Wait();
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error during role seeding.");
+        }
     }
 }
 

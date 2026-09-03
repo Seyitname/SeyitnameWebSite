@@ -1,12 +1,11 @@
-<!-- AI tarafından yapıldı - Portföy sayfası -->
-@model IEnumerable<Baglanti>
+﻿@model IEnumerable<Baglanti>
 @{
     ViewData["Title"] = "Portföy - Seyitname";
 }
 
 <div class="container py-5">
     <div class="text-center mb-5 portfolio-item">
-        <h1 class="hero-title mb-3">📁 Portföyüm</h1>
+        <h1 class="hero-title mb-3">Portföyüm</h1>
         <p class="hero-subtitle">Projelerim, Çalışmalarım ve Bağlantılarım</p>
     </div>
 
@@ -28,7 +27,7 @@
                         <div class="d-flex gap-2">
                             @if (!string.IsNullOrEmpty(baglanti.Link))
                             {
-                                <a href="@baglanti.Link" target="_blank" class="btn btn-custom btn-sm flex-grow-1">🔗 Ziyaret Et</a>
+                                <a href="@baglanti.Link" target="_blank" class="btn btn-custom btn-sm flex-grow-1">Ziyaret Et</a>
                             }
                         </div>
                     </div>
@@ -49,7 +48,6 @@
 <!-- Disabled temporarily (JS) - openLink commented out -->
 <!--
 <script>
-    // AI tarafından yapıldı - Link açma
     function openLink(url) {
         if (url && url.trim() !== '') {
             window.open(url, '_blank');
@@ -57,3 +55,4 @@
     }
 </script>
 -->
+

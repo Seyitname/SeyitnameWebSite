@@ -1,5 +1,4 @@
-// AI tarafından yapıldı: Bu dosyada yapılan değişiklikler AI (GitHub Copilot) tarafından önerildi ve eklendi.
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using SeyitnameWebSite.Data;
 using SeyitnameWebSite.Models;
@@ -25,7 +24,6 @@ public class CallUsController : Controller
         {
             return View(model);
         }
-        // AI tarafından eklenen kod bloğu
         // Ensure context is available
         if (_context == null)
         {
@@ -54,3 +52,4 @@ public class CallUsController : Controller
         return View(item);
     }
 }
+

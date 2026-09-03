@@ -1,9 +1,7 @@
-@model LoginModel
+﻿@model LoginModel
 @{
     ViewData["Title"] = "Giriş Yap";
 }
-
-<!-- AI tarafından yapıldı - Modern login sayfası -->
 
 <div class="form-page-bg">
     <div class="form-page-content">
@@ -16,13 +14,13 @@
 
                             <form asp-action="Login" method="post">
                                 <div class="form-group mb-3">
-                                    <label asp-for="Username" class="form-label gradient-text">👨‍💻 Kullanıcı Adı</label>
+                                    <label asp-for="Username" class="form-label gradient-text">Kullanıcı Adı</label>
                                     <input asp-for="Username" class="form-control-custom form-control" placeholder="Kullanıcı Adı" />
                                     <span asp-validation-for="Username" class="text-danger small"></span>
                                 </div>
 
                                 <div class="form-group mb-3">
-                                    <label asp-for="Password" class="form-label gradient-text">🔐 Şifre</label>
+                                    <label asp-for="Password" class="form-label gradient-text">Şifre</label>
                                     <input asp-for="Password" type="password" class="form-control-custom form-control" placeholder="Şifre" />
                                     <span asp-validation-for="Password" class="text-danger small"></span>
                                 </div>
@@ -47,7 +45,7 @@
                             <hr class="border-secondary" />
 
                             <p class="text-center text-muted">
-                                Hesabın yok mu? 
+                                Hesabın yok mu?
                                 <a asp-action="Register" class="gradient-text text-decoration-none">Kayıt Ol</a>
                             </p>
                         </div>
@@ -63,3 +61,4 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
+

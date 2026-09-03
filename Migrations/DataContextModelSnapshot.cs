@@ -274,41 +274,7 @@ namespace SeyitnameWebSite.Migrations
                         });
                 });
 
-            modelBuilder.Entity("SeyitnameWebSite.Data.Homework", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("DueDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("IsCompleted")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Subject")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Homeworks");
-                });
+            // Homeworks entity removed from model snapshot
 
             modelBuilder.Entity("SeyitnameWebSite.Data.IletisimBilgileri", b =>
                 {
@@ -502,17 +468,7 @@ namespace SeyitnameWebSite.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SeyitnameWebSite.Data.Homework", b =>
-                {
-                    b.HasOne("SeyitnameWebSite.Data.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
+            // Homeworks navigation removed
             modelBuilder.Entity("SeyitnameWebSite.Data.Message", b =>
                 {
                     b.HasOne("SeyitnameWebSite.Data.User", "User")

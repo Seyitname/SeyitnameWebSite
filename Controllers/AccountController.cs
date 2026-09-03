@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using SeyitnameWebSite.Data;
 using System.ComponentModel.DataAnnotations;
@@ -6,17 +6,17 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
 namespace SeyitnameWebSite.Controllers;
-
-// AI tarafından yapıldı
 public class AccountController : Controller
 {
     private readonly SignInManager<User> _signInManager;
     private readonly UserManager<User> _userManager;
+    private readonly RoleManager<IdentityRole> _roleManager;
 
-    public AccountController(SignInManager<User> signInManager, UserManager<User> userManager)
+    public AccountController(SignInManager<User> signInManager, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
     {
         _signInManager = signInManager;
         _userManager = userManager;
+        _roleManager = roleManager;
     }
 
     [HttpGet]
@@ -30,14 +30,14 @@ public class AccountController : Controller
     {
         if (ModelState.IsValid)
         {
-            // Email gerçekliğini basit kontrol et (4. madde)
+            // E-posta gerçekliğini basit kontrol et
             if (!IsValidEmailDomain(model.Email))
             {
                 ModelState.AddModelError("Email", "Geçerli bir e-posta adresi girin");
                 return View(model);
             }
 
-            // Benzersiz tag oluştur (6. madde)
+            // Benzersiz tag oluştur
             var tag = await GenerateUniqueTag();
 
             var user = new User
@@ -52,11 +52,23 @@ public class AccountController : Controller
 
             if (result.Succeeded)
             {
-                // Otomatik olarak "Member" rolü ata
+                if (!await _roleManager.RoleExistsAsync("Member"))
+                {
+                    await _roleManager.CreateAsync(new IdentityRole("Member"));
+                }
+
                 await _userManager.AddToRoleAsync(user, "Member");
 
                 await _signInManager.SignInAsync(user, isPersistent: false);
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("AfterRegister", "Home");
+            }
+
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
             }
 
             foreach (var error in result.Errors)
@@ -111,7 +123,7 @@ public class AccountController : Controller
     // Yardımcı metodlar
     private bool IsValidEmailDomain(string email)
     {
-        // Basit email domain kontrolü - gerçek SMTP kontrolü yerine
+        // Basit e-posta domain kontrolü - gerçek SMTP kontrolü yerine
         var domains = new[] { "gmail.com", "yahoo.com", "hotmail.com", "outlook.com", "yandex.com", "icloud.com" };
         var domain = email.Split('@').LastOrDefault()?.ToLower();
         return domains.Contains(domain);
@@ -128,8 +140,6 @@ public class AccountController : Controller
         return tag;
     }
 }
-
-// AI tarafından yapıldı - Register Model
 public class RegisterModel
 {
     [Required(ErrorMessage = "Kullanıcı adı zorunludur")]
@@ -154,8 +164,6 @@ public class RegisterModel
     [DataType(DataType.Password)]
     public string ConfirmPassword { get; set; } = string.Empty;
 }
-
-// AI tarafından yapıldı - Login Model
 public class LoginModel
 {
     [Required(ErrorMessage = "Kullanıcı adı zorunludur")]
@@ -167,3 +175,4 @@ public class LoginModel
 
     public bool RememberMe { get; set; }
 }
+

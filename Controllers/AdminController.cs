@@ -1,12 +1,10 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SeyitnameWebSite.Data;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
-// AI tarafından yapıldı - Admin Paneli Kontrolörü
 
 namespace SeyitnameWebSite.Controllers
 {

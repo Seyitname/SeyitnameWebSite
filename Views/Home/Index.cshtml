@@ -3,19 +3,17 @@
     ViewData["Title"] = "Anasayfa - Seyitname";
 }
 
-<!-- AI tarafından yapıldı - Landing page ve rastgele bağlantılar -->
-
 <section class="hero-section">
     <div class="hero-content">
         <h1 class="hero-title">Hoşgeldiniz!</h1>
         <p class="hero-subtitle">Seyitname - Kişisel Portföy ve İletişim Platformu</p>
-        
+
         <div class="mt-5 d-flex gap-3 justify-content-center flex-wrap">
             <a href="/Baglanti/Index" class="btn btn-outline-primary btn-lg text-white">
-                📁 Portföyümü Gör
+                Portföyümü Gör
             </a>
             <a href="/CallUs/Index" class="btn btn-outline-primary btn-lg text-white">
-                💬 İletişime Geç
+                İletişime Geç
             </a>
         </div>
 
@@ -29,23 +27,22 @@
 
 <section class="py-5">
     <div class="container">
-        <!-- Özellikler -->
         <div class="row g-4 mb-5">
             <div class="col-md-6">
                 <div class="card-custom portfolio-item">
-                    <h3 class="gradient-text mb-3">🎯 Hakkımda</h3>
+                    <h3 class="gradient-text mb-3">Hakkımda</h3>
                     <p class="text-muted">
-                        Bu sayfada kişisel bilgilerim, portföyüm ve iletişim bilgilerim yer almaktadır. 
+                        Bu sayfada kişisel bilgilerim, portföyüm ve iletişim bilgilerim yer almaktadır.
                         Portföy sayfasında projelerim ve bağlantılarım bulunmaktadır.
                     </p>
                 </div>
             </div>
-            
+
             <div class="col-md-6">
                 <div class="card-custom portfolio-item">
-                    <h3 class="gradient-text mb-3">📱 İletişim</h3>
+                    <h3 class="gradient-text mb-3">İletişim</h3>
                     <p class="text-muted">
-                        Herhangi bir sorunuz veya öneriniz varsa lütfen iletişim formunu kullanarak bize ulaşabilirsiniz. 
+                        Herhangi bir sorunuz veya öneriniz varsa lütfen iletişim formunu kullanarak bize ulaşabilirsiniz.
                         Geri dönüşlere çok değer veriyoruz.
                     </p>
                 </div>
@@ -55,7 +52,7 @@
         <div class="row g-4 mb-5">
             <div class="col-md-4">
                 <div class="card-custom portfolio-item text-center">
-                    <h4 class="gradient-text mb-2">💻</h4>
+                    <h4 class="gradient-text mb-2">👤</h4>
                     <h5>Profiller</h5>
                     <p class="text-muted small">Profillerimi görüntüleyin</p>
                 </div>
@@ -63,7 +60,7 @@
 
             <div class="col-md-4">
                 <div class="card-custom portfolio-item text-center">
-                    <h4 class="gradient-text mb-2">📚</h4>
+                    <h4 class="gradient-text mb-2">📄</h4>
                     <h5>Bilgiler</h5>
                     <p class="text-muted small">Kişisel bilgilerim ve detaylı bilgiler</p>
                 </div>
@@ -78,11 +75,10 @@
             </div>
         </div>
 
-        <!-- Rastgele 3 Bağlantı -->
         @if (Model != null && Model.Any())
         {
             <div class="text-center mb-5 portfolio-item">
-                <h2 class="gradient-text mb-1">✨ Spotlight</h2>
+                <h2 class="gradient-text mb-1">Spotlight</h2>
                 <p class="text-muted">Rastgele Seçilen Profillerim</p>
             </div>
 
@@ -103,7 +99,7 @@
                                 @if (!string.IsNullOrEmpty(baglanti.Link))
                                 {
                                     <a href="@baglanti.Link" target="_blank" class="btn btn-custom btn-sm flex-grow-1">
-                                        🔗 Ziyaret Et
+                                        Ziyaret Et
                                     </a>
                                 }
                             </div>
@@ -121,10 +117,7 @@
     </div>
 </section>
 
-<!-- Disabled temporarily (JS) - Scroll animation commented out -->
-<!--
 <script>
-    // AI tarafından yapıldı - Scroll animasyonu
     const observerOptions = {
         threshold: 0.1,
         rootMargin: '0px 0px -50px 0px'
@@ -147,4 +140,4 @@
         observer.observe(item);
     });
 </script>
--->
+

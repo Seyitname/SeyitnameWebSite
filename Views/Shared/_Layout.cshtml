@@ -1,19 +1,17 @@
-﻿<!-- AI tarafından yapıldı - Modern animasyonlu navbar ve hero section -->
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - SeyitnameWebSite</title>
     <link rel="stylesheet" href="/Identity/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="/Identity/css/identity-cutom.css" />
+    <link rel="stylesheet" href="/Identity/css/identity-custom.css" />
     <link rel="stylesheet" href="~/css/safe.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/SeyitnameWebSite.styles.css" asp-append-version="true" />
     <link rel="shortcut icon" href="~/img/Orjinal.jpg" type="image/x-icon">
 </head>
 <body>
     <header>
-        <!-- AI tarafından yapıldı - Modern navbar -->
         <nav class="navbar navbar-expand-lg sticky-top">
             <div class="container-fluid px-4">
                 <a class="navbar-brand fw-bold" href="/" style="font-size: 1.5rem; letter-spacing: 2px;">
@@ -50,9 +48,6 @@
                             <li class="nav-item">
                                 <a class="nav-link nav-link-custom" asp-controller="User" asp-action="Index">👥 Kullanıcılar</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link nav-link-custom" asp-controller="Chat" asp-action="Index">💬 Sohbet</a>
-                            </li>
                             @await Html.PartialAsync("_AdminNavLink")
                             <li class="nav-item">
                                 <form asp-controller="Account" asp-action="Logout" method="post" style="display:inline;">
@@ -79,8 +74,6 @@
             @RenderBody()
         </main>
     </div>
-
-    <!-- AI tarafından yapıldı - Modern footer -->
     <footer class="footer-custom mt-5 pt-5 pb-3">
         <div class="container">
             <div class="row">
