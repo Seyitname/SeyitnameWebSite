@@ -15,25 +15,33 @@ builder.Services.AddDbContext<DataContext>(options =>
 {
     if (builder.Environment.IsDevelopment())
     {
-        options.UseSqlite(connectionString);
+        options.UseSqlite(connectionString ?? "Data Source=mydb.db");
+        return;
     }
-    else
-    {
-        var pgRaw = Environment.GetEnvironmentVariable("DATABASE_INTERNAL_URL");
 
-        if (string.IsNullOrEmpty(pgRaw))
-            throw new Exception("DATABASE_INTERNAL_URL is not set");
+    var pgRaw = Environment.GetEnvironmentVariable("DATABASE_INTERNAL_URL")
+        ?? Environment.GetEnvironmentVariable("DATABASE_URL");
 
-        var uri = new Uri(pgRaw);
-        var port = uri.Port > 0 ? uri.Port : 5432;
-        var npgsqlConn = $"Host={uri.Host};Port={port};" +
-                         $"Database={uri.AbsolutePath.TrimStart('/')};" +
-                         $"Username={uri.UserInfo.Split(':')[0]};" +
-                         $"Password={uri.UserInfo.Split(':')[1]};" +
-                         $"SSL Mode=Require;Trust Server Certificate=true";
+    if (string.IsNullOrWhiteSpace(pgRaw))
+        throw new InvalidOperationException("DATABASE_INTERNAL_URL or DATABASE_URL is not set.");
 
-        options.UseNpgsql(npgsqlConn);
-    }
+    var uri = new Uri(pgRaw);
+    var port = uri.Port > 0 ? uri.Port : 5432;
+    var userInfo = uri.UserInfo.Split(':', 2);
+    var username = userInfo[0];
+    var password = userInfo.Length > 1 ? userInfo[1] : string.Empty;
+
+    var databaseName = uri.AbsolutePath.TrimStart('/');
+
+    var npgsqlConn =
+        $"Host={uri.Host};" +
+        $"Port={port};" +
+        $"Database={databaseName};" +
+        $"Username={username};" +
+        $"Password={password};" +
+        "SSL Mode=Require;Trust Server Certificate=true;";
+
+    options.UseNpgsql(npgsqlConn);
 });
 
 // --------------------
@@ -76,6 +84,20 @@ using (var scope = app.Services.CreateScope())
 
     try
     {
+        if (!app.Environment.IsDevelopment())
+        {
+            logger.LogInformation("Applying pending migrations...");
+            db.Database.Migrate();
+        }
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "Database migration failed.");
+        throw;
+    }
+
+    try
+    {
         var roles = new[] { "Admin", "Member", "özel misafir" };
         foreach (var role in roles)
         {
@@ -90,60 +112,24 @@ using (var scope = app.Services.CreateScope())
         logger.LogError(ex, "Error during role seeding.");
     }
 
-    if (!app.Environment.IsDevelopment())
+    try
     {
-        try
-        {
-            var applied = db.Database.GetAppliedMigrations().ToList();
-            var all = db.Database.GetMigrations().ToList();
-            var pending = all.Except(applied).ToList();
-
-            logger.LogInformation($"Applied: {applied.Count}, Pending: {pending.Count}");
-
-            foreach (var migration in pending)
-            {
-                try
-                {
-                    if (migration.Contains("InitialCreate"))
-                    {
-                        logger.LogInformation($"Skipping {migration}, marking as applied...");
-                        db.Database.ExecuteSqlRaw(
-                            $"INSERT INTO \"__EFMigrationsHistory\" (\"MigrationId\", \"ProductVersion\") VALUES ('{migration}', '8.0.0')"
-                        );
-                    }
-                    else
-                    {
-                        logger.LogInformation($"Applying: {migration}");
-                        db.Database.Migrate();
-                        logger.LogInformation("All pending migrations applied.");
-                        break;
-                    }
-                }
-                catch (Exception mex)
-                {
-                    logger.LogWarning(mex, $"Failed: {migration}, skipping...");
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Migration check failed.");
-        }
-
-        try
+        if (!app.Environment.IsDevelopment())
         {
             var users = db.Users.ToList();
             if (users.Count == 1)
             {
                 var user = users.First();
                 if (!userManager.IsInRoleAsync(user, "Admin").Result)
+                {
                     userManager.AddToRoleAsync(user, "Admin").Wait();
+                }
             }
         }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error during role seeding.");
-        }
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "Error during admin role assignment.");
     }
 }
 
