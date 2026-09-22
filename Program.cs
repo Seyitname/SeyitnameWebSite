@@ -7,41 +7,42 @@ AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 var builder = WebApplication.CreateBuilder(args);
 
 // --------------------
-// DATABASE
+// DATABASE (PostgreSQL)
 // --------------------
-var connectionString = builder.Configuration.GetConnectionString("database");
-
 builder.Services.AddDbContext<DataContext>(options =>
 {
-    if (builder.Environment.IsDevelopment())
-    {
-        options.UseSqlite(connectionString ?? "Data Source=mydb.db");
-        return;
-    }
-
+    // 1. Render üzerindeki DATABASE_URL ortam değişkenini kontrol et
     var pgRaw = Environment.GetEnvironmentVariable("DATABASE_INTERNAL_URL")
         ?? Environment.GetEnvironmentVariable("DATABASE_URL");
 
-    if (string.IsNullOrWhiteSpace(pgRaw))
-        throw new InvalidOperationException("DATABASE_INTERNAL_URL or DATABASE_URL is not set.");
+    string connectionString;
 
-    var uri = new Uri(pgRaw);
-    var port = uri.Port > 0 ? uri.Port : 5432;
-    var userInfo = uri.UserInfo.Split(':', 2);
-    var username = userInfo[0];
-    var password = userInfo.Length > 1 ? userInfo[1] : string.Empty;
+    if (!string.IsNullOrWhiteSpace(pgRaw))
+    {
+        // Render (Production) Bağlantısı
+        var uri = new Uri(pgRaw);
+        var port = uri.Port > 0 ? uri.Port : 5432;
+        var userInfo = uri.UserInfo.Split(':', 2);
+        var username = userInfo[0];
+        var password = userInfo.Length > 1 ? userInfo[1] : string.Empty;
+        var databaseName = uri.AbsolutePath.TrimStart('/');
 
-    var databaseName = uri.AbsolutePath.TrimStart('/');
+        connectionString = $"Host={uri.Host};" +
+                           $"Port={port};" +
+                           $"Database={databaseName};" +
+                           $"Username={username};" +
+                           $"Password={password};" +
+                           $"SSL Mode=Require;Trust Server Certificate=true;";
+    }
+    else
+    {
+        // Lokal (appsettings.Development.json veya appsettings.json) Bağlantısı
+        connectionString = builder.Configuration.GetConnectionString("database") 
+            ?? builder.Configuration.GetConnectionString("DefaultConnection");
+    }
 
-    var npgsqlConn =
-        $"Host={uri.Host};" +
-        $"Port={port};" +
-        $"Database={databaseName};" +
-        $"Username={username};" +
-        $"Password={password};" +
-        "SSL Mode=Require;Trust Server Certificate=true;";
-
-    options.UseNpgsql(npgsqlConn);
+    // Hem Lokal hem Production için PostgreSQL Kullan
+    options.UseNpgsql(connectionString);
 });
 
 // --------------------
@@ -84,11 +85,8 @@ using (var scope = app.Services.CreateScope())
 
     try
     {
-        if (!app.Environment.IsDevelopment())
-        {
-            logger.LogInformation("Applying pending migrations...");
-            db.Database.Migrate();
-        }
+        logger.LogInformation("Applying pending migrations...");
+        db.Database.Migrate();
     }
     catch (Exception ex)
     {
