@@ -22,3 +22,5 @@ mydb.db*
 
 # Yedeklenen dosyalar
 .backup/
+# Veri Tabanı
+appsettings.Development.json
