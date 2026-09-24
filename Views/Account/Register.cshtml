@@ -1,0 +1,82 @@
+﻿@model RegisterModel
+@{
+    ViewData["Title"] = "Kayıt Ol";
+}
+
+<div class="form-page-bg">
+    <div class="form-page-content">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-6">
+                    <div class="card-custom shadow-lg">
+                        <div class="card-body p-5">
+                            <h2 class="card-title text-center gradient-text mb-4">Yeni Hesap Oluştur</h2>
+
+                            <form asp-action="Register" method="post">
+                                <div class="form-group mb-3">
+                                    <label asp-for="FullName" class="form-label gradient-text">Ad-Soyad</label>
+                                    <input asp-for="FullName" class="form-control-custom form-control" placeholder="Adınız ve Soyadınız" />
+                                    <span asp-validation-for="FullName" class="text-danger small"></span>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label asp-for="Username" class="form-label gradient-text">Kullanıcı Adı</label>
+                                    <input asp-for="Username" class="form-control-custom form-control" placeholder="Kullanıcı Adı" />
+                                    <span asp-validation-for="Username" class="text-danger small"></span>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label asp-for="Email" class="form-label gradient-text">E-posta</label>
+                                    <input asp-for="Email" type="email" class="form-control-custom form-control" placeholder="E-posta Adresi" />
+                                    <span asp-validation-for="Email" class="text-danger small"></span>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label asp-for="Password" class="form-label gradient-text">Şifre</label>
+                                    <input asp-for="Password" type="password" class="form-control-custom form-control" placeholder="Şifre (En az 6 karakter)" />
+                                    <span asp-validation-for="Password" class="text-danger small"></span>
+                                </div>
+
+                                <div class="form-group mb-4">
+                                    <label asp-for="ConfirmPassword" class="form-label gradient-text">Şifre Onayı</label>
+                                    <input asp-for="ConfirmPassword" type="password" class="form-control-custom form-control" placeholder="Şifreyi Onayla" />
+                                    <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                                </div>
+
+                                <div class="form-check mb-4">
+                                    <input class="form-check-input" type="checkbox" id="agreeTerms" name="agreeTerms" required />
+                                    <label class="form-check-label text-light" for="agreeTerms">
+                                        <a asp-controller="Legal" asp-action="TermsOfService" target="_blank" class="text-decoration-none" style="color: #667eea;">
+                                            Hüküm ve Koşullar
+                                        </a>
+                                        ile
+                                        <a asp-controller="Legal" asp-action="PrivacyPolicy" target="_blank" class="text-decoration-none" style="color: #667eea;">
+                                            Gizlilik Politikasını
+                                        </a>
+                                        kabul ediyorum
+                                    </label>
+                                </div>
+
+                                <button type="submit" class="btn btn-custom w-100 mb-3">Kayıt Ol</button>
+                            </form>
+
+                            <hr class="border-secondary" />
+
+                            <p class="text-center text-muted">
+                                Zaten hesabın var mı?
+                                <a asp-action="Login" class="gradient-text text-decoration-none">Giriş Yap</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+

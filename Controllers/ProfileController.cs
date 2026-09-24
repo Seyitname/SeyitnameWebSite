@@ -1,0 +1,204 @@
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using SeyitnameWebSite.Data;
+using System.ComponentModel.DataAnnotations;
+
+namespace SeyitnameWebSite.Controllers;
+[Authorize]
+public class ProfileController : Controller
+{
+    private readonly UserManager<User> _userManager;
+    private readonly SignInManager<User> _signInManager;
+    private readonly DataContext _context;
+
+    public ProfileController(UserManager<User> userManager, SignInManager<User> signInManager, DataContext context)
+    {
+        _userManager = userManager;
+        _signInManager = signInManager;
+        _context = context;
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Index()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return NotFound();
+
+        return View(user);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Edit()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return NotFound();
+
+        var model = new EditProfileModel
+        {
+            FullName = user.FullName,
+            Email = user.Email,
+            Bio = user.Bio,
+            UserName = user.UserName
+        };
+
+        return View(model);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(EditProfileModel model)
+    {
+        if (!ModelState.IsValid)
+            return View(model);
+
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return NotFound();
+
+        user.FullName = model.FullName;
+        user.Bio = model.Bio;
+
+        var result = await _userManager.UpdateAsync(user);
+        if (result.Succeeded)
+        {
+            return RedirectToAction(nameof(Index));
+        }
+
+        foreach (var error in result.Errors)
+        {
+            ModelState.AddModelError(string.Empty, error.Description);
+        }
+
+        return View(model);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> DeleteAccount([FromBody] DeleteAccountModel model)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return Json(new { success = false, message = "Kullanıcı bulunamadı!" });
+
+        // Şifreyi kontrol et
+        var result = await _userManager.CheckPasswordAsync(user, model.Password);
+        if (!result)
+            return Json(new { success = false, message = "✕ Şifre yanlış! Hesap silinmedi." });
+
+        // Hesabı sil
+        var deleteResult = await _userManager.DeleteAsync(user);
+        if (deleteResult.Succeeded)
+        {
+            // Oturumu kapat
+            await _signInManager.SignOutAsync();
+            return Json(new { success = true, message = "Hesap başarıyla silindi!" });
+        }
+
+        return Json(new { success = false, message = "Silme işlemi başarısız!" });
+    }
+
+    // Şifre değiştirme sayfası (5. madde)
+    [HttpGet]
+    public IActionResult ChangePassword()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ChangePassword(ChangePasswordModel model)
+    {
+        if (!ModelState.IsValid)
+            return View(model);
+
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+            return NotFound();
+
+        var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+        if (result.Succeeded)
+        {
+            await _signInManager.RefreshSignInAsync(user);
+            TempData["Success"] = "Şifre başarıyla değiştirildi!";
+            return RedirectToAction("Index");
+        }
+
+        foreach (var error in result.Errors)
+            ModelState.AddModelError("", error.Description);
+
+        return View(model);
+    }
+
+    [HttpGet]
+    public IActionResult ConfirmDeleteAccount()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteAccountConfirm(string password)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+        {
+            TempData["ErrorMessage"] = "Kullanıcı bulunamadı!";
+            return RedirectToAction(nameof(Index));
+        }
+
+        var result = await _userManager.CheckPasswordAsync(user, password);
+        if (!result)
+        {
+            ModelState.AddModelError(string.Empty, "✕ Şifre yanlış!");
+            return View("ConfirmDeleteAccount");
+        }
+
+        var deleteResult = await _userManager.DeleteAsync(user);
+        if (deleteResult.Succeeded)
+        {
+            await _signInManager.SignOutAsync();
+            TempData["SuccessMessage"] = "Hesabınız silindi!";
+            return RedirectToAction("Index", "Home");
+        }
+
+        ModelState.AddModelError(string.Empty, "Silme işlemi başarısız!");
+        return View("ConfirmDeleteAccount");
+    }
+}
+public class EditProfileModel
+{
+    public string? UserName { get; set; }
+
+    [System.ComponentModel.DataAnnotations.Required]
+    [System.ComponentModel.DataAnnotations.StringLength(50)]
+    public string FullName { get; set; } = string.Empty;
+
+    [System.ComponentModel.DataAnnotations.EmailAddress]
+    public string? Email { get; set; }
+
+    [System.ComponentModel.DataAnnotations.StringLength(500)]
+    public string? Bio { get; set; }
+}
+public class ChangePasswordModel
+{
+    [System.ComponentModel.DataAnnotations.Required(ErrorMessage = "Mevcut şifre zorunludur")]
+    [DataType(DataType.Password)]
+    public string CurrentPassword { get; set; } = string.Empty;
+
+    [System.ComponentModel.DataAnnotations.Required(ErrorMessage = "Yeni şifre zorunludur")]
+    [StringLength(100, MinimumLength = 6, ErrorMessage = "Yeni şifre en az 6 karakter olmalıdır")]
+    [DataType(DataType.Password)]
+    public string NewPassword { get; set; } = string.Empty;
+
+    [System.ComponentModel.DataAnnotations.Required(ErrorMessage = "Şifre onayı zorunludur")]
+    [Compare("NewPassword", ErrorMessage = "Yeni şifreler eşleşmiyor")]
+    [DataType(DataType.Password)]
+    public string ConfirmNewPassword { get; set; } = string.Empty;
+}
+public class DeleteAccountModel
+{
+    public string Password { get; set; } = string.Empty;
+}
+

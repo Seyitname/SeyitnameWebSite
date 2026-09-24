@@ -1,0 +1,55 @@
+﻿@using SeyitnameWebSite.Data
+@model IletisimBilgileri
+
+@{
+    ViewData["Title"] = "Teşekkürler - Seyitname";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card-custom text-center portfolio-item">
+                <div style="font-size: 4rem; margin-bottom: 1.5rem;">✓</div>
+                <h1 class="hero-title mb-3">Teşekkürler!</h1>
+                
+                <p class="hero-subtitle mb-4">
+                    @if (!string.IsNullOrEmpty(Model?.Ad))
+                    {
+                        <span>Merhaba <span class="gradient-text">@Model.Ad</span>!</span>
+                    }
+                    else
+                    {
+                        <span>Mesajınız başarıyla alındı!</span>
+                    }
+                </p>
+
+                @if (Model != null)
+                {
+                    <div class="text-muted mb-4">
+                        <p class="small">
+                            <strong>Değerlendirmeniz:</strong> ⭐ @Model.Puan/10<br>
+                            <strong>E-posta:</strong> @Model.Email<br>
+                            <strong>Tarih:</strong> @DateTime.Now.ToString("dd.MM.yyyy HH:mm")
+                        </p>
+                    </div>
+                }
+
+                <p class="text-muted mb-5">
+                    Bizi değerlendirdiğiniz ve düşüncelerinizi paylaştığınız için çok teşekkür ederiz.
+                    Sizin görüşleriniz bizim web sitemizi geliştirmek için çok önemlidir.
+                    <br><br>
+                    En kısa sürede sizinle iletişime geçeceğiz.
+                </p>
+
+                <div class="d-flex gap-3 justify-content-center">
+                    <a href="/" class="btn btn-custom btn-lg">
+                        Anasayfaya Dön
+                    </a>
+                    <a href="/Baglanti/Index" class="btn btn-outline-primary btn-lg">
+                        Portföyü Gör
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

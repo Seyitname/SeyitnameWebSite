@@ -1,0 +1,41 @@
+@{
+    ViewData["Title"] = "Hesabı Sil - Onay";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card-custom p-4">
+                <h3 class="mb-3">⚠️ Hesabınızı Kalıcı Olarak Sil</h3>
+                <p class="mb-3">Bu işlem hesabınızı kalıcı olarak silecek. Lütfen şifrenizi girerek onaylayın.</p>
+
+                <form asp-action="DeleteAccountConfirm" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Şifreniz</label>
+                        <input type="password" name="password" id="password" class="form-control" required />
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="@Url.Action("Index", "Profile")" class="btn btn-secondary">İptal</a>
+                        <button type="submit" class="btn btn-danger">Evet, Hesabı Sil</button>
+                    </div>
+                </form>
+
+                @if (ViewData.ModelState.ErrorCount > 0)
+                {
+                    <div class="alert alert-danger mt-3">
+                        @foreach (var err in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                        {
+                            <div>@err.ErrorMessage</div>
+                        }
+                    </div>
+                }
+
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success mt-3">@TempData["SuccessMessage"]</div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

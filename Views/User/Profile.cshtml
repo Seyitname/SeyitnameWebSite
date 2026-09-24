@@ -1,0 +1,38 @@
+@model SeyitnameWebSite.Data.User
+@{
+    ViewData["Title"] = $"{Model.UserName} Profili";
+}
+
+<!-- Kullanıcı profili görüntüleme sayfası -->
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card card-custom shadow-lg">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <h2 class="gradient-text">@Model.UserName@Model.Tag</h2>
+                        <h4 class="text-light">@Model.FullName</h4>
+                        <p class="text-muted">Üyelik tarihi: @Model.CreatedDate.ToShortDateString()</p>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.Bio))
+                    {
+                        <div class="mb-4">
+                            <h5 class="gradient-text">Hakkında</h5>
+                            <p class="text-light">@Model.Bio</p>
+                        </div>
+                    }
+
+                    <div class="mb-4">
+                        <h5 class="gradient-text">İletişim</h5>
+                        <p class="text-light">E-posta: @Model.Email</p>
+                    </div>
+
+                    <div class="text-center">
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-custom">Ana Sayfa</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,26 @@
+﻿# Ignore build outputs
+bin/
+obj/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Rider/IDE
+.idea/
+
+# NuGet packages
+*.nupkg
+
+# OS files
+Thumbs.db
+desktop.ini
+
+# Ignore local SQLite DB files
+mydb.db*
+
+# Yedeklenen dosyalar
+.backup/
+# Veri Tabanı
+appsettings.Development.json

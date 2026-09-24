@@ -1,0 +1,178 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
+using SeyitnameWebSite.Data;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
+
+namespace SeyitnameWebSite.Controllers;
+public class AccountController : Controller
+{
+    private readonly SignInManager<User> _signInManager;
+    private readonly UserManager<User> _userManager;
+    private readonly RoleManager<IdentityRole> _roleManager;
+
+    public AccountController(SignInManager<User> signInManager, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+    {
+        _signInManager = signInManager;
+        _userManager = userManager;
+        _roleManager = roleManager;
+    }
+
+    [HttpGet]
+    public IActionResult Register()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Register(RegisterModel model)
+    {
+        if (ModelState.IsValid)
+        {
+            // E-posta gerçekliğini basit kontrol et
+            if (!IsValidEmailDomain(model.Email))
+            {
+                ModelState.AddModelError("Email", "Geçerli bir e-posta adresi girin");
+                return View(model);
+            }
+
+            // Benzersiz tag oluştur
+            var tag = await GenerateUniqueTag();
+
+            var user = new User
+            {
+                UserName = model.Username,
+                Email = model.Email,
+                FullName = model.FullName,
+                Tag = tag // Otomatik tag ekle
+            };
+
+            var result = await _userManager.CreateAsync(user, model.Password);
+
+            if (result.Succeeded)
+            {
+                if (!await _roleManager.RoleExistsAsync("Member"))
+                {
+                    await _roleManager.CreateAsync(new IdentityRole("Member"));
+                }
+
+                await _userManager.AddToRoleAsync(user, "Member");
+
+                await _signInManager.SignInAsync(user, isPersistent: false);
+                return RedirectToAction("AfterRegister", "Home");
+            }
+
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+        }
+
+        return View(model);
+    }
+
+    [HttpGet]
+    public IActionResult Login(string? returnUrl = null)
+    {
+        ViewData["ReturnUrl"] = returnUrl;
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Login(LoginModel model, string? returnUrl = null)
+    {
+        ViewData["ReturnUrl"] = returnUrl;
+
+        if (ModelState.IsValid)
+        {
+            var result = await _signInManager.PasswordSignInAsync(
+                model.Username, model.Password, model.RememberMe, lockoutOnFailure: false);
+
+            if (result.Succeeded)
+            {
+                return LocalRedirect(returnUrl ?? "/");
+            }
+
+            ModelState.AddModelError(string.Empty, "Geçersiz kullanıcı adı veya şifre");
+        }
+
+        return View(model);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Logout()
+    {
+        await _signInManager.SignOutAsync();
+        return RedirectToAction("Index", "Home");
+    }
+
+    public IActionResult AccessDenied()
+    {
+        return View();
+    }
+
+    // Yardımcı metodlar
+    private bool IsValidEmailDomain(string email)
+    {
+        // Basit e-posta domain kontrolü - gerçek SMTP kontrolü yerine
+        var domains = new[] { "gmail.com", "yahoo.com", "hotmail.com", "outlook.com", "yandex.com", "icloud.com" };
+        var domain = email.Split('@').LastOrDefault()?.ToLower();
+        return domains.Contains(domain);
+    }
+
+    private async Task<string> GenerateUniqueTag()
+    {
+        var random = new Random();
+        string tag;
+        do
+        {
+            tag = $"[{random.Next(100, 999)}]";
+        } while (await _userManager.Users.AnyAsync(u => u.Tag == tag));
+        return tag;
+    }
+}
+public class RegisterModel
+{
+    [Required(ErrorMessage = "Kullanıcı adı zorunludur")]
+    [StringLength(20, MinimumLength = 3, ErrorMessage = "Kullanıcı adı 3-20 karakter arasında olmalıdır")]
+    public string Username { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "E-posta zorunludur")]
+    [EmailAddress(ErrorMessage = "Geçerli bir e-posta adresi girin")]
+    public string Email { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "Ad-Soyad zorunludur")]
+    [StringLength(50, MinimumLength = 2, ErrorMessage = "Ad-Soyad 2-50 karakter arasında olmalıdır")]
+    public string FullName { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "Şifre zorunludur")]
+    [StringLength(100, MinimumLength = 6, ErrorMessage = "Şifre en az 6 karakter olmalıdır")]
+    [DataType(DataType.Password)]
+    public string Password { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "Şifre onayı zorunludur")]
+    [Compare("Password", ErrorMessage = "Şifreler eşleşmiyor")]
+    [DataType(DataType.Password)]
+    public string ConfirmPassword { get; set; } = string.Empty;
+}
+public class LoginModel
+{
+    [Required(ErrorMessage = "Kullanıcı adı zorunludur")]
+    public string Username { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "Şifre zorunludur")]
+    [DataType(DataType.Password)]
+    public string Password { get; set; } = string.Empty;
+
+    public bool RememberMe { get; set; }
+}
+

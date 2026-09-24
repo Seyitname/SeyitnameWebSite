@@ -1,0 +1,22 @@
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace SeyitnameWebSite.Controllers
+{
+    public class LegalController : Controller
+    {
+        public IActionResult PrivacyPolicy()
+        {
+            return View();
+        }
+
+        public IActionResult TermsOfService()
+        {
+            return View();
+        }
+        public IActionResult NedenBoyleBirSiteVar()
+        {
+            return View();
+        }
+    }
+}
+
