@@ -4,3 +4,4 @@ bin
 obj
 publish
 .vercel-publish-check
+App_Data

@@ -7,13 +7,27 @@ AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 var builder = WebApplication.CreateBuilder(args);
 var port = builder.Configuration["PORT"] ?? "80";
 builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
+var useLocalSqlite = builder.Environment.IsDevelopment();
+var localDatabasePath = Path.Combine(builder.Environment.ContentRootPath, "App_Data", "local.db");
+
+if (useLocalSqlite)
+{
+    Directory.CreateDirectory(Path.GetDirectoryName(localDatabasePath)!);
+}
 
 // ------------------------------------------------------------------
 // DATABASE & EF CORE CONFIGURATION (Vercel & Supabase Destekli)
 // ------------------------------------------------------------------
 builder.Services.AddDbContext<DataContext>(options =>
 {
-    options.UseNpgsql(DatabaseConnectionString.Resolve(builder.Configuration));
+    if (useLocalSqlite)
+    {
+        options.UseSqlite($"Data Source={localDatabasePath}");
+    }
+    else
+    {
+        options.UseNpgsql(DatabaseConnectionString.Resolve(builder.Configuration));
+    }
 });
 
 // ------------------------------------------------------------------
@@ -98,8 +112,16 @@ try
 
     try
     {
-        logger.LogInformation("Applying pending migrations...");
-        db.Database.Migrate();
+        if (useLocalSqlite)
+        {
+            logger.LogInformation("Creating local SQLite database...");
+            db.Database.EnsureCreated();
+        }
+        else
+        {
+            logger.LogInformation("Applying pending migrations...");
+            db.Database.Migrate();
+        }
     }
     catch (Exception ex)
     {
