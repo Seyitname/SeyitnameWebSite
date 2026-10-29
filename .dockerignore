@@ -1,0 +1,6 @@
+.git
+.vercel
+bin
+obj
+publish
+.vercel-publish-check
