@@ -9,7 +9,6 @@ namespace SeyitnameWebSite.Data
     {
         public DataContext CreateDbContext(string[] args)
         {
-            // appsettings.json veya appsettings.Development.json'dan bağlantı cümlesini oku
             IConfigurationRoot configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: true)
@@ -17,13 +16,7 @@ namespace SeyitnameWebSite.Data
                 .Build();
 
             var optionsBuilder = new DbContextOptionsBuilder<DataContext>();
-
-            // appsettings içindeki 'database' veya 'DefaultConnection' anahtarını al
-            var connectionString = configuration.GetConnectionString("database") 
-                ?? configuration.GetConnectionString("DefaultConnection")
-                ?? "Host=localhost;Port=5071;Database=mydb;Username=postgres;Password=LOKAL_SIFRENIZ";
-
-            // Artık Tasarım Anında da (Design-Time) PostgreSQL Kullanılacak
+            var connectionString = DatabaseConnectionString.Resolve(configuration);
             optionsBuilder.UseNpgsql(connectionString);
 
             return new DataContext(optionsBuilder.Options);
