@@ -8,6 +8,18 @@
   ],
   "routes": [
     {
+      "src": "/css/(.*)",
+      "dest": "/wwwroot/css/$1"
+    },
+    {
+      "src": "/js/(.*)",
+      "dest": "/wwwroot/js/$1"
+    },
+    {
+      "src": "/images/(.*)",
+      "dest": "/wwwroot/images/$1"
+    },
+    {
       "src": "/(.*)",
       "dest": "Program.cs"
     }
