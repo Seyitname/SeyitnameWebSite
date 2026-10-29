@@ -23,3 +23,6 @@ mydb.db*
 # Yedeklenen dosyalar
 .backup/
 .Notes
+
+#docker
+Dockerfile

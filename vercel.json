@@ -2,14 +2,14 @@
   "version": 2,
   "builds": [
     {
-      "src": "*.csproj",
+      "src": "Program.cs",
       "use": "vercel-dotnet"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/"
+      "dest": "Program.cs"
     }
   ]
 }
