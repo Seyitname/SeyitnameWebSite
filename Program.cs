@@ -5,7 +5,7 @@ using SeyitnameWebSite.Data;
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 var builder = WebApplication.CreateBuilder(args);
-var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+var port = builder.Configuration["PORT"] ?? "80";
 builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
 
 // ------------------------------------------------------------------
