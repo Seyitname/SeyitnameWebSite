@@ -6,49 +6,19 @@ AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 var builder = WebApplication.CreateBuilder(args);
 
-// --------------------
-// DATABASE (PostgreSQL)
-// --------------------
+// ------------------------------------------------------------------
+// DATABASE & EF CORE CONFIGURATION (Vercel & Supabase Destekli)
+// ------------------------------------------------------------------
 builder.Services.AddDbContext<DataContext>(options =>
 {
-    // 1. Render üzerindeki DATABASE_URL ortam değişkenini kontrol et
-    var pgRaw = Environment.GetEnvironmentVariable("DATABASE_INTERNAL_URL")
-        ?? Environment.GetEnvironmentVariable("DATABASE_URL");
-
-    string connectionString;
-
-    if (!string.IsNullOrWhiteSpace(pgRaw))
-    {
-        // Render (Production) Bağlantısı
-        var uri = new Uri(pgRaw);
-        var port = uri.Port > 0 ? uri.Port : 5432;
-        var userInfo = uri.UserInfo.Split(':', 2);
-        var username = userInfo[0];
-        var password = userInfo.Length > 1 ? userInfo[1] : string.Empty;
-        var databaseName = uri.AbsolutePath.TrimStart('/');
-
-        connectionString = $"Host={uri.Host};" +
-                           $"Port={port};" +
-                           $"Database={databaseName};" +
-                           $"Username={username};" +
-                           $"Password={password};" +
-                           $"SSL Mode=Require;Trust Server Certificate=true;";
-    }
-    else
-    {
-        // Lokal (appsettings.Development.json veya appsettings.json) Bağlantısı
-        connectionString = builder.Configuration.GetConnectionString("database") 
-            ?? builder.Configuration.GetConnectionString("DefaultConnection");
-    }
-
-    // Hem Lokal hem Production için PostgreSQL Kullan
-    options.UseNpgsql(connectionString);
+    options.UseNpgsql(DatabaseConnectionString.Resolve(builder.Configuration));
 });
 
-// --------------------
-// IDENTITY
-// --------------------
-builder.Services.AddIdentity<User, IdentityRole>(options =>
+// ------------------------------------------------------------------
+// IDENTITY CONFIGURATION
+// ------------------------------------------------------------------
+// Hata Çözümü: Tip karmaşasını çözmek için DataContext'e bağlı gerçek User sınıfı açıkça yazıldı.
+builder.Services.AddIdentity<SeyitnameWebSite.Data.User, IdentityRole>(options =>
 {
     options.Password.RequiredLength = 6;
     options.Password.RequireDigit = false;
@@ -61,9 +31,9 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
 .AddEntityFrameworkStores<DataContext>()
 .AddDefaultTokenProviders();
 
-// --------------------
-// MVC
-// --------------------
+// ------------------------------------------------------------------
+// MVC & COOKIE CONFIGURATION
+// ------------------------------------------------------------------
 builder.Services.AddControllersWithViews();
 
 builder.Services.ConfigureApplicationCookie(options =>
@@ -75,13 +45,18 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 var app = builder.Build();
 
+// ------------------------------------------------------------------
+// DATABASE MIGRATIONS & SEED DATA (Otomatik Tablo ve Rol Oluşturma)
+// ------------------------------------------------------------------
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var logger = services.GetRequiredService<ILogger<Program>>();
     var db = services.GetRequiredService<DataContext>();
+
+    // Hata Çözümü: GetRequiredService tipleri eksiksiz belirtildi.
     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-    var userManager = services.GetRequiredService<UserManager<User>>();
+    var userManager = services.GetRequiredService<UserManager<SeyitnameWebSite.Data.User>>();
 
     try
     {
@@ -91,7 +66,14 @@ using (var scope = app.Services.CreateScope())
     catch (Exception ex)
     {
         logger.LogError(ex, "Database migration failed.");
-        throw;
+        if (app.Environment.IsDevelopment())
+        {
+            logger.LogWarning("Lokal veritabanına bağlanılamadı, ancak hot reload aktif.");
+        }
+        else
+        {
+            throw;
+        }
     }
 
     try
@@ -99,9 +81,9 @@ using (var scope = app.Services.CreateScope())
         var roles = new[] { "Admin", "Member", "özel misafir" };
         foreach (var role in roles)
         {
-            if (!roleManager.RoleExistsAsync(role).Result)
+            if (!await roleManager.RoleExistsAsync(role))
             {
-                roleManager.CreateAsync(new IdentityRole(role)).Wait();
+                await roleManager.CreateAsync(new IdentityRole(role));
             }
         }
     }
@@ -118,9 +100,9 @@ using (var scope = app.Services.CreateScope())
             if (users.Count == 1)
             {
                 var user = users.First();
-                if (!userManager.IsInRoleAsync(user, "Admin").Result)
+                if (!await userManager.IsInRoleAsync(user, "Admin"))
                 {
-                    userManager.AddToRoleAsync(user, "Admin").Wait();
+                    await userManager.AddToRoleAsync(user, "Admin");
                 }
             }
         }
@@ -131,9 +113,9 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-// --------------------
-// PIPELINE
-// --------------------
+// ------------------------------------------------------------------
+// MIDDLEWARES & PIPELINE
+// ------------------------------------------------------------------
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");

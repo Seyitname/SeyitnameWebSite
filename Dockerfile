@@ -1,10 +1,8 @@
-# 1️⃣ Build stage (SDK var)
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY . .
 RUN dotnet publish -c Release -o /app/publish
 
-# 2️⃣ Runtime stage (hafif)
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 COPY --from=build /app/publish .
