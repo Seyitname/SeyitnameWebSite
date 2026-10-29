@@ -22,7 +22,11 @@ mydb.db*
 
 # Yedeklenen dosyalar
 .backup/
+.backup/static-assets/
 .Notes
+.vs
+.qodo
+.vscode
 
 #docker
 Dockerfile
