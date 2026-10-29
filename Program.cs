@@ -46,17 +46,53 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 var app = builder.Build();
+var initializationResult = new TaskCompletionSource<Exception?>(
+    TaskCreationOptions.RunContinuationsAsynchronously);
 
-// ------------------------------------------------------------------
-// DATABASE MIGRATIONS & SEED DATA (Otomatik Tablo ve Rol Oluşturma)
-// ------------------------------------------------------------------
-using (var scope = app.Services.CreateScope())
+// Start accepting connections before database initialization so the container
+// can pass Vercel's startup probe while migrations are running.
+if (!app.Environment.IsDevelopment())
 {
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+
+app.UseRouting();
+
+app.Use(async (context, next) =>
+{
+    var initializationError = await initializationResult.Task;
+    if (initializationError is not null)
+    {
+        context.Response.StatusCode = StatusCodes.Status503ServiceUnavailable;
+        await context.Response.WriteAsync("Application initialization failed.");
+        return;
+    }
+
+    await next();
+});
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+await app.StartAsync();
+
+try
+{
+    // ------------------------------------------------------------------
+    // DATABASE MIGRATIONS & SEED DATA
+    // ------------------------------------------------------------------
+    using var scope = app.Services.CreateScope();
     var services = scope.ServiceProvider;
     var logger = services.GetRequiredService<ILogger<Program>>();
     var db = services.GetRequiredService<DataContext>();
-
-    // Hata Çözümü: GetRequiredService tipleri eksiksiz belirtildi.
     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
     var userManager = services.GetRequiredService<UserManager<SeyitnameWebSite.Data.User>>();
 
@@ -70,7 +106,7 @@ using (var scope = app.Services.CreateScope())
         logger.LogError(ex, "Database migration failed.");
         if (app.Environment.IsDevelopment())
         {
-            logger.LogWarning("Lokal veritabanına bağlanılamadı, ancak hot reload aktif.");
+            logger.LogWarning("Local database is unavailable; continuing in Development.");
         }
         else
         {
@@ -113,27 +149,15 @@ using (var scope = app.Services.CreateScope())
     {
         logger.LogError(ex, "Error during admin role assignment.");
     }
-}
 
-// ------------------------------------------------------------------
-// MIDDLEWARES & PIPELINE
-// ------------------------------------------------------------------
-if (!app.Environment.IsDevelopment())
+    initializationResult.SetResult(null);
+}
+catch (Exception ex)
 {
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
+    app.Logger.LogCritical(ex, "Application initialization failed.");
+    initializationResult.TrySetResult(ex);
+    await app.StopAsync();
+    throw;
 }
 
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-
-app.UseRouting();
-
-app.UseAuthentication();
-app.UseAuthorization();
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
-
-app.Run();
+await app.WaitForShutdownAsync();
