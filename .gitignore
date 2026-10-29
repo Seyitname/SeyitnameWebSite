@@ -27,6 +27,3 @@ mydb.db*
 .vs
 .qodo
 .vscode
-
-#docker
-Dockerfile
