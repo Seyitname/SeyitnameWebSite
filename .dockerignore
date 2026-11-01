@@ -1,5 +1,8 @@
 .git
 .vercel
+.backup
+.vs
+.vscode
 bin
 obj
 publish
