@@ -33,7 +33,7 @@
 
                                 <div class="form-group mb-3">
                                     <label asp-for="Password" class="form-label gradient-text">Şifre</label>
-                                    <input asp-for="Password" type="password" class="form-control-custom form-control" placeholder="Şifre (En az 6 karakter)" />
+                                    <input asp-for="Password" type="password" class="form-control-custom form-control" placeholder="Şifre (En az 8 karakter ve 1 rakam)" />
                                     <span asp-validation-for="Password" class="text-danger small"></span>
                                 </div>
 
@@ -79,4 +79,3 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
-

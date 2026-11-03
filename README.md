@@ -5,7 +5,7 @@
 <details open>
 <summary><b>🇬🇧 English</b></summary>
 
-A full-stack personal portfolio and contact platform built with **ASP.NET Core 8.0 MVC** and **Entity Framework Core**. It includes user authentication with role-based authorization and database-driven portfolio and contact content.
+A full-stack personal portfolio and contact platform built with **ASP.NET Core 8.0 MVC** and **Entity Framework Core**. It includes user authentication with role management and database-driven portfolio and contact content.
 
 ## Tech Stack
 
@@ -16,7 +16,7 @@ A full-stack personal portfolio and contact platform built with **ASP.NET Core 8
 
 ## Features
 
-- Registration, login, and role-based authorization (Admin / Member) with ASP.NET Core Identity
+- Registration, login, and role management (Admin / Member) with ASP.NET Core Identity
 - Database-driven portfolio and contact content
 - Public pages: portfolio, contact, information pages, games section, privacy policy, and terms of service
 - Environment-based setup: a local SQLite database is created automatically in development; EF Core migrations are applied automatically on startup in production
@@ -46,7 +46,7 @@ In production, the PostgreSQL connection string is provided through environment 
 <details>
 <summary><b>🇹🇷 Türkçe</b></summary>
 
-**ASP.NET Core 8.0 MVC** ve **Entity Framework Core** ile geliştirilmiş, full-stack bir kişisel portföy ve iletişim platformudur. Rol tabanlı yetkilendirmeli kimlik doğrulama ve veritabanı tabanlı portföy/iletişim içeriği sunar.
+**ASP.NET Core 8.0 MVC** ve **Entity Framework Core** ile geliştirilmiş, full-stack bir kişisel portföy ve iletişim platformudur. Rol yönetimli kimlik doğrulama ve veritabanı tabanlı portföy/iletişim içeriği sunar.
 
 ## Teknolojiler
 
@@ -57,7 +57,7 @@ In production, the PostgreSQL connection string is provided through environment 
 
 ## Özellikler
 
-- ASP.NET Core Identity ile kayıt, giriş ve rol tabanlı yetkilendirme (Admin / Member)
+- ASP.NET Core Identity ile kayıt, giriş ve rol yönetimi (Admin / Member)
 - Veritabanı tabanlı portföy ve iletişim içeriği
 - Herkese açık sayfalar: portföy, iletişim, bilgi sayfaları, oyunlar bölümü, gizlilik politikası ve kullanım koşulları
 - Ortama göre kurulum: geliştirmede yerel SQLite veritabanı otomatik oluşturulur, canlıda EF Core migration'ları açılışta otomatik uygulanır

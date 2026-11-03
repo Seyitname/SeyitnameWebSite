@@ -63,17 +63,20 @@ public class AccountController : Controller
                 return RedirectToAction("AfterRegister", "Home");
             }
 
-            if (!result.Succeeded)
+            foreach (var error in result.Errors)
             {
-                foreach (var error in result.Errors)
+                if (error.Code == "PasswordRequiresDigit")
+                {
+                    ModelState.AddModelError(nameof(model.Password), "Şifre en az bir rakam içermelidir.");
+                }
+                else if (error.Code == "PasswordTooShort")
+                {
+                    ModelState.AddModelError(nameof(model.Password), "Şifre en az 8 karakter olmalıdır.");
+                }
+                else
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
-            }
-
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
             }
         }
 
@@ -175,4 +178,3 @@ public class LoginModel
 
     public bool RememberMe { get; set; }
 }
-
