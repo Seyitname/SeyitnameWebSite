@@ -36,8 +36,8 @@ builder.Services.AddDbContext<DataContext>(options =>
 // Hata Çözümü: Tip karmaşasını çözmek için DataContext'e bağlı gerçek User sınıfı açıkça yazıldı.
 builder.Services.AddIdentity<SeyitnameWebSite.Data.User, IdentityRole>(options =>
 {
-    options.Password.RequiredLength = 6;
-    options.Password.RequireDigit = false;
+    options.Password.RequiredLength = 8;
+    options.Password.RequireDigit = true;
     options.Password.RequireLowercase = false;
     options.Password.RequireUppercase = false;
     options.Password.RequireNonAlphanumeric = false;
@@ -108,7 +108,6 @@ try
     var logger = services.GetRequiredService<ILogger<Program>>();
     var db = services.GetRequiredService<DataContext>();
     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-    var userManager = services.GetRequiredService<UserManager<SeyitnameWebSite.Data.User>>();
 
     try
     {
@@ -150,26 +149,6 @@ try
     catch (Exception ex)
     {
         logger.LogError(ex, "Error during role seeding.");
-    }
-
-    try
-    {
-        if (!app.Environment.IsDevelopment())
-        {
-            var users = db.Users.ToList();
-            if (users.Count == 1)
-            {
-                var user = users.First();
-                if (!await userManager.IsInRoleAsync(user, "Admin"))
-                {
-                    await userManager.AddToRoleAsync(user, "Admin");
-                }
-            }
-        }
-    }
-    catch (Exception ex)
-    {
-        logger.LogError(ex, "Error during admin role assignment.");
     }
 
     initializationResult.SetResult(null);
