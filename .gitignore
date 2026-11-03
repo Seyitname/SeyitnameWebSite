@@ -1,6 +1,8 @@
 ﻿# Ignore build outputs
 bin/
 obj/
+publish/
+node_modules/
 
 # Visual Studio
 .vs/
@@ -29,3 +31,4 @@ App_Data/*.db*
 .vs
 .qodo
 .vscode
+Properties/launchSettings.json
